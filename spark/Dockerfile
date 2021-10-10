@@ -22,6 +22,9 @@ RUN pip3 install nltk
 RUN pip3 install numpy
 RUN pip3 install pandas
 
+# Install PyMongo
+RUN pip3 install pymongo
+
 # Installing XGBoost
 # RUN apt install cmake -y
 # RUN pip3 install --upgrade pip
@@ -51,11 +54,13 @@ RUN /app/spark_config.sh
 ENV PYSPARK_PYTHON python3
 
 # # Application code
-# COPY transformer.py /app/transformer.py
+COPY transformer.py /app/transformer.py
+
 # COPY XGBoost_model.pkl /app/XGBoost_model.pkl
-# COPY start_spark.sh /app/start_spark.sh
-# RUN chmod u+x /app/start_spark.sh
 
-# CMD ["/bin/bash","-c","/app/start_spark.sh"]
+COPY start_spark.sh /app/start_spark.sh
+RUN chmod u+x /app/start_spark.sh
 
-CMD ["/bin/bash"]
+CMD ["/bin/bash","-c","/app/start_spark.sh"]
+
+# CMD ["/bin/bash"]

@@ -32,7 +32,6 @@ RUN pip3 install gdown
 # Install dotenv, requests
 RUN pip3 install python-dotenv
 RUN pip3 install requests
-RUN pip3 install pymongo
 
 
 # Copy dataset and model

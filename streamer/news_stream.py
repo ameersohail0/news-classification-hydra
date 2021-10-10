@@ -14,7 +14,7 @@ import requests
 from time import sleep
                                                                                                                         
 BROKER = "broker:9092"                                                                                    
-TOPIC = 'news-classifier'                                                                                                                                                                                 
+TOPIC = 'news-trainer'                                                                                                                                                                                 
                                                                                                                         
 try:                                                                                                                    
     p = KafkaProducer(bootstrap_servers=BROKER)                                                                         
@@ -22,14 +22,14 @@ except Exception as e:
     print(f"ERROR --> {e}")                                                                                             
     sys.exit(1)
 
-# load_dotenv()
+load_dotenv()
 
-# url = "https://free-news.p.rapidapi.com/v1/search"
+url = "https://free-news.p.rapidapi.com/v1/search"
 
-# headers = {
-#     'x-rapidapi-host': "free-news.p.rapidapi.com",
-#     'x-rapidapi-key': os.getenv('API_KEY') # hide API key
-#     }
+headers = {
+    'x-rapidapi-host': "free-news.p.rapidapi.com",
+    'x-rapidapi-key': os.getenv('API_KEY') # hide API key
+    }
 
 # # MongoDB Setup
 # from pymongo import MongoClient
@@ -41,21 +41,22 @@ except Exception as e:
 
 # articles = db['articles']
 
-# TOPICS = ["Sports","Business","Tech","Finance","Crime"]
+TOPICS = ["Sports","Business","Tech","Finance","Crime"]
 
-# for topic in TOPICS:
-#     for page_no in range(1,5):
-#         querystring = {"q":topic,"lang":"en","page":str(page_no),"page_size":"25"}
-#         response = requests.request("GET", url, headers=headers, params=querystring)
+for topic in TOPICS:
+    for page_no in range(1,5):
+        querystring = {"q":topic,"lang":"en","page":str(page_no),"page_size":"25"}
+        response = requests.request("GET", url, headers=headers, params=querystring)
+        try:
+            for article in response.json()['articles']:
+                message = article["topic"]+"//"+article["title"]+"//"+article["summary"]                                                                                       
+                print(f">>> {message.split('//')}")                                                                                           
+                p.send(TOPIC, bytes(message, encoding="utf8"))                                                                      
+                sleep(1)
+        except :
+            print(f"max limit for topic {topic} reached")
 
-#         try: 
-#             result = articles.insert_many(response.json()['articles'])
-#             print(result.inserted_ids)
-#             # print(response.json())
-#         except :
-#             print(f"max limit for topic {topic} reached")
-
-#         sleep(2)
+        sleep(2)
 
 while True:                                                                                                             
     pass
