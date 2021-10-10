@@ -1,0 +1,45 @@
+version: '2'
+services:
+  zookeper:
+    build: zookeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - 2181:2181
+  
+  broker:
+    build: broker
+    depends_on:
+      - zookeper
+    ports:
+      - 9092:9092
+    environment:
+      KAFKA_BROKER_ID: 0
+      KAFKA_ZOOKEEPER_CONNECT: zookeper:2181
+
+  streamer:
+    build: streamer
+    depends_on:
+      - broker
+    environment: 
+      KAFKA_BROKER: broker:9092
+
+  spark:
+    build: spark
+    depends_on: 
+      - streamer
+    environment:
+      KAFKA_BROKER: broker:9092
+      MONGO_PORT: 27017
+
+  flask:
+    build: flask
+    ports:
+      - 5000:5000
+
+  mongo:
+    image: mongo:latest
+    ports:
+      - 27017:27017
+
