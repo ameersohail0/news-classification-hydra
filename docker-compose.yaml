@@ -31,6 +31,7 @@ services:
       - streamer
     environment:
       KAFKA_BROKER: broker:9092
+      MONGO_SERVER: mongo:27017
       MONGO_PORT: 27017
 
   flask:
