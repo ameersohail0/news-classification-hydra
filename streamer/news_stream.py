@@ -9,6 +9,7 @@ import pandas as pd
 import os
 from dotenv import load_dotenv
 import requests
+import json
 
 # Sleep from Time library
 from time import sleep
@@ -43,20 +44,32 @@ headers = {
 
 TOPICS = ["Sports","Business","Tech","Finance","Crime"]
 
-for topic in TOPICS:
-    for page_no in range(1,5):
-        querystring = {"q":topic,"lang":"en","page":str(page_no),"page_size":"25"}
-        response = requests.request("GET", url, headers=headers, params=querystring)
-        try:
-            for article in response.json()['articles']:
-                message = article["topic"]+"//"+article["title"]+"//"+article["summary"]                                                                                       
-                print(f">>> {message.split('//')}")                                                                                           
-                p.send(TOPIC, bytes(message, encoding="utf8"))                                                                      
-                sleep(1)
-        except :
-            print(f"max limit for topic {topic} reached")
+# for topic in TOPICS:
+#     for page_no in range(1,5):
+#         querystring = {"q":topic,"lang":"en","page":str(page_no),"page_size":"25"}
+#         response = requests.request("GET", url, headers=headers, params=querystring)
+#         try:
+#             for article in response.json()['articles']:
+#                 try:
+#                     message = article["topic"]+"//"+article["title"]+"//"+article["summary"]                                                                                       
+#                     print(f">>> {message.split('//')}")                                                                                           
+#                     p.send(TOPIC, bytes(message, encoding="utf8"))
+#                 except:
+#                     print("message can't be sent")                                                                      
+#                 sleep(1)
+#         except :
+#             print(f"max limit for topic {topic} reached")
 
-        sleep(2)
+#         sleep(2)
+
+news = json.load(open("news_articles.json",encoding="utf-8"))
 
 while True:                                                                                                             
-    pass
+    for article in news:
+        try:
+            message = article["topic"]+"//"+article["title"]+"//"+article["summary"]
+            print(f">>> {message.split('//')}")
+            p.send(TOPIC, bytes(message, encoding="utf8"))
+        except:
+            print("message can't be sent")
+        sleep(1)

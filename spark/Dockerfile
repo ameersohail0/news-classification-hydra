@@ -35,10 +35,15 @@ RUN pip3 install pymongo
 # RUN pip3 install xgboost
 
 # Downloading Spark
-RUN wget https://mirrors.estointernet.in/apache/spark/spark-3.1.2/spark-3.1.2-bin-hadoop2.7.tgz
-RUN tar -xvf spark-3.1.2-bin-hadoop2.7.tgz
-RUN mv spark-3.1.2-bin-hadoop2.7 spark
-RUN rm spark-3.1.2-bin-hadoop2.7.tgz
+RUN wget https://archive.apache.org/dist/spark/spark-2.4.8/spark-2.4.8-bin-hadoop2.7.tgz
+RUN tar -xvf spark-2.4.8-bin-hadoop2.7.tgz
+RUN mv spark-2.4.8-bin-hadoop2.7.tgz spark
+# RUN rm spark-2.4.8-bin-hadoop2.7.tgz
+
+# RUN wget https://mirrors.estointernet.in/apache/spark/spark-3.1.2/spark-3.1.2-bin-hadoop2.7.tgz
+# RUN tar -xvf spark-3.1.2-bin-hadoop2.7.tgz
+# RUN mv spark-3.1.2-bin-hadoop2.7 spark
+# RUN rm spark-3.1.2-bin-hadoop2.7.tgz
 
 # Downloading Spark Streaming Kafka
 RUN wget https://search.maven.org/remotecontent?filepath=org/apache/spark/spark-streaming-kafka-0-8-assembly_2.11/2.4.8/spark-streaming-kafka-0-8-assembly_2.11-2.4.8.jar -O spark-streaming-kafka-0-8-assembly_2.11-2.4.8.jar

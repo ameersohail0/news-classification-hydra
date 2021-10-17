@@ -8,6 +8,9 @@ import pickle
 import pandas as pd
 import numpy as np
 
+import os
+import json
+
 # # MongoDB Setup
 from pymongo import MongoClient
 client = MongoClient()
@@ -20,10 +23,22 @@ articles = db['articles']
 
 def handle_rdd(rdd):                                                                                                    
     if not rdd.isEmpty():                                                                                               
-        global ss                                                                                                       
-        df = ss.createDataFrame(rdd, schema=['TOPIC', 'TITLE', 'SUMMARY'])                                                
-        df.show()
-        df.write.saveAsTable(name='news_db.articles', format='mongo', mode='append')                                                                                                        
+        try :
+            global ss                                                                                                       
+            df = ss.createDataFrame(rdd, schema=['TOPIC', 'TITLE', 'SUMMARY'])                                                
+            df.show()
+            # df.write.saveAsTable(name='news_db.articles', format='mongo', mode='append')
+            # df.write.format("mongo").mode("append").option("database","news_db").option("collection", "articles").save()
+            results = df.toJSON().map(lambda j: json.loads(j)).collect()
+            print(results)
+            if len(results) > 1:
+                articles.insert_many(results)
+            elif len(results) == 1 :
+                articles.insert(results)
+        except:
+            print("error occured")
+            pass
+        # articles.insert_many(df)                                                                                                     
         # df.write.saveAsTable(name='default.nycparkingtickets', format='hive', mode='append')    
                            
 # def predict_location(data):
@@ -50,9 +65,11 @@ print(lines)
 ss = SparkSession \
     .builder \
     .appName("NEWSTRAINER") \
-    .config("spark.mongodb.input.uri", "mongodb://mongo/news_db.articles") \
-    .config("spark.mongodb.output.uri", "mongodb://mongo/news_db.articles") \
+    .config("spark.mongodb.input.uri", "mongodb://mongo:27017/news_db.articles") \
+    .config("spark.mongodb.output.uri", "mongodb://mongo:27017/news_db.articles") \
     .getOrCreate()
+    # .config("spark.mongodb.input.uri", "mongodb://"+os.environ['MONGO_SERVER']+"/news_db.articles") \
+    # .config("spark.mongodb.output.uri", "mongodb://"+os.environ['MONGO_SERVER']+"/news_db.articles") \
 
 ss.sparkContext.setLogLevel('WARN')            
                                                                                                             
