@@ -29,6 +29,8 @@ services:
     build: spark
     depends_on: 
       - streamer
+    ports:
+      - 9999:9999
     environment:
       KAFKA_BROKER: broker:9092
       MONGO_SERVER: mongo:27017
