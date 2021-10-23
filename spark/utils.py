@@ -27,10 +27,11 @@ tfidf = pickle.load(open("models/tfidf_vect.pkl", "rb"))
 def load_model():
     global clf
     clf = pickle.load(open("models/news_classifier.pkl", "rb"))
-    # load data
-    with open("/app/data/news_db.json", encoding = 'utf-8') as f:
-        data = json.load(f)
-        articles.insert_many(data)
+    # load data if empty
+    if (articles.count() == 0) :
+        with open("/app/data/news_db.json", encoding = 'utf-8') as f:
+            data = json.load(f)
+            articles.insert_many(data)
 
 # function to predict the flower using the model
 def predict(query_data):
