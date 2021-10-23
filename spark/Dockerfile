@@ -67,13 +67,17 @@ ENV PYSPARK_PYTHON python3
 COPY main.py /app/main.py
 COPY utils.py /app/utils.py
 RUN mkdir models
+
 COPY models/news_classifier.pkl /app/models/news_classifier.pkl
+COPY models/label_encoder.pkl /app/models/label_encoder.pkl
+COPY models/tfidf_vect.pkl /app/models/tfidf_vect.pkl
 
 RUN mkdir data
 COPY data/news_db.json /app/data/news_db.json
 
 # # Application code
 COPY transformer.py /app/transformer.py
+COPY trainer.py /app/trainer.py
 
 # COPY XGBoost_model.pkl /app/XGBoost_model.pkl
 

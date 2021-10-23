@@ -16,7 +16,6 @@ app.add_event_handler("startup", load_model)
 
 # class which is expected in the payload
 class QueryIn(BaseModel):
-    title: str
     summary: str
 
 
@@ -43,10 +42,9 @@ def ping():
 # Payload: QueryIn containing the parameters
 # Response: QueryOut containing the topic of news predicted (200)
 def classify_news(query_data: QueryIn):
-    tp,acc = predict(query_data)
+    tp = predict(query_data)
     output = {
-        "topic": tp,
-        "accuracy" : acc
+        "topic": tp
     }
     return output
 
@@ -64,9 +62,8 @@ def add_news(data: DataIn):
 # Payload: FeedbackIn containing the parameters and correct news topic
 # Response: Dict with detail confirming success (200)
 def train():
-    train_model()
-    load_model()
-    return {"detail": "Training successful"}
+    resp = train_model()
+    return resp
 
 # Main function to start the app when main.py is called
 if __name__ == "__main__":
