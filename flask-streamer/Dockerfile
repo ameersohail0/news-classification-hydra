@@ -33,19 +33,8 @@ RUN pip3 install gdown
 RUN pip3 install python-dotenv
 RUN pip3 install requests
 
-
-# Copy dataset and model
-# RUN gdown https://drive.google.com/uc?id=1XPcrTJNuDmRU1SC24kTWff8BY3IJImBK
-# COPY XGBoost_model.pkl /app/XGBoost_model.pkl
-
-# Installing XGBoost
-# RUN apt install cmake -y
-# RUN pip3 install --upgrade pip
-# RUN pip3 install --upgrade setuptools
-# RUN pip3 install ez_setup
-# RUN pip3 install wheel
-# RUN pip3 install sklearn
-# RUN pip3 install xgboost
+# Install Flask
+RUN pip3 install flask
 
 # Copy existing database
 COPY news_articles.json /app/news_articles.json
@@ -58,8 +47,19 @@ COPY .env /app/.env
 COPY kafka_create.sh /app/kafka_create.sh
 RUN chmod u+x /app/kafka_create.sh
 
-# adding twitter_stream script
+# adding news_stream script
 COPY news_stream.sh /app/news_stream.sh
 RUN chmod u+x /app/news_stream.sh
 
-CMD /app/kafka_create.sh && /app/news_stream.sh
+# Application code
+COPY app.py /app/app.py
+
+# adding start_flask script
+COPY start_flask.sh /app/start_flask.sh
+RUN chmod u+x /app/start_flask.sh
+
+CMD /app/start_flask.sh
+
+# CMD [ "python3", "-m" , "flask", "run", "--host=0.0.0.0"]
+
+# CMD /app/kafka_create.sh && /app/news_stream.sh
