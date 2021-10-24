@@ -40,7 +40,7 @@ RUN pip3 install flask
 COPY news_articles.json /app/news_articles.json
 
 # Copy news stream
-COPY news_stream.py /app/news_stream.py
+COPY news_streamer.py /app/news_streamer.py
 COPY .env /app/.env
 
 # adding kafka_create script

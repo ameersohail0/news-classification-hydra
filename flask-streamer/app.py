@@ -1,5 +1,7 @@
 from flask import Flask,request
 import requests
+import os
+import subprocess
 
 app = Flask(__name__)
 
@@ -35,7 +37,9 @@ def classify_news():
 def add_news():
     given_request = request.get_json()
     if request.method == "POST":
-        if {'timeout'} == set(given_request.keys()):
+        if {'timeout','topic'} == set(given_request.keys()):
+            topic = given_request.pop('topic')
+            proc1 = subprocess.Popen(f"python3 /app/news_streamer.py '{topic}' {given_request['timeout']}", shell = True)
             url = SPARK_SERVER + "add_news"
             r = requests.post(url, json=given_request)
             return {'status':201, 'result':r.json()}
