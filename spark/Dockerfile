@@ -69,11 +69,14 @@ COPY utils.py /app/utils.py
 RUN mkdir models
 
 COPY models/news_classifier.pkl /app/models/news_classifier.pkl
-COPY models/label_encoder.pkl /app/models/label_encoder.pkl
-COPY models/tfidf_vect.pkl /app/models/tfidf_vect.pkl
+COPY models/news_classifier_softmax.pkl /app/models/news_classifier_softmax.pkl
+COPY models/news_classifier_nb.pkl /app/models/news_classifier_nb.pkl
+COPY models/count_vector.pkl /app/models/count_vector.pkl
+COPY models/tfidf.pkl /app/models/tfidf.pkl
 
 RUN mkdir data
 COPY data/news_db.json /app/data/news_db.json
+COPY data/news_new.json /app/data/news_new.json
 
 # # Application code
 COPY transformer.py /app/transformer.py
