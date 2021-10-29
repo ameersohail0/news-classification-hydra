@@ -3,6 +3,14 @@ import os, signal
 import json
 import time
 from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
+import nltk
+from nltk import word_tokenize
+from nltk.corpus import stopwords
+import re
+
+import nltk
+nltk.download('stopwords')
+nltk.download('punkt')
 
 import subprocess
 
