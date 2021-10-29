@@ -12,6 +12,7 @@ SHELL ["/bin/bash", "-c"]
 RUN apt update
 
 # Install dependencies
+RUN apt install -y dos2unix
 RUN apt install wget -y
 RUN apt install python3 -y
 RUN apt install python3-pip -y
@@ -46,10 +47,12 @@ COPY .env /app/.env
 # adding kafka_create script
 COPY kafka_create.sh /app/kafka_create.sh
 RUN chmod u+x /app/kafka_create.sh
+RUN dos2unix /app/kafka_create.sh
 
 # adding news_stream script
 COPY news_stream.sh /app/news_stream.sh
 RUN chmod u+x /app/news_stream.sh
+RUN dos2unix /app/news_stream.sh
 
 # Application code
 COPY app.py /app/app.py
@@ -57,8 +60,10 @@ COPY app.py /app/app.py
 # adding start_flask script
 COPY start_flask.sh /app/start_flask.sh
 RUN chmod u+x /app/start_flask.sh
+RUN dos2unix /app/start_flask.sh
 
 CMD /app/start_flask.sh
+
 
 # CMD [ "python3", "-m" , "flask", "run", "--host=0.0.0.0"]
 

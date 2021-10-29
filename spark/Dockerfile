@@ -12,6 +12,7 @@ SHELL ["/bin/bash", "-c"]
 RUN apt update
 
 # Install dependencies
+RUN apt install -y dos2unix
 RUN apt install wget -y
 RUN apt install python3 -y
 RUN apt install python3-pip -y
@@ -60,7 +61,9 @@ RUN cp ~/.bashrc ~/.bashrc.bak
 # adding spark_config script
 COPY spark_config.sh /app/spark_config.sh
 RUN chmod u+x /app/spark_config.sh
+RUN dos2unix /app/spark_config.sh
 RUN /app/spark_config.sh
+
 
 ENV PYSPARK_PYTHON python3
 
@@ -86,6 +89,7 @@ COPY trainer.py /app/trainer.py
 
 COPY start_spark.sh /app/start_spark.sh
 RUN chmod u+x /app/start_spark.sh
+RUN dos2unix /app/start_spark.sh
 
 CMD ["/bin/bash","-c","/app/start_spark.sh"]
 

@@ -12,6 +12,7 @@ SHELL ["/bin/bash", "-c"]
 RUN apt update
 
 # Install dependencies
+RUN apt install -y dos2unix
 RUN apt install wget -y
 RUN apt install python3 -y
 RUN apt install python3-pip -y
@@ -30,5 +31,6 @@ RUN pip3 install kafka-python
 # adding zookeper script
 COPY zookeper.sh /app/zookeper.sh
 RUN chmod u+x /app/zookeper.sh
+RUN dos2unix /app/zookeper.sh
 
 CMD /app/zookeper.sh
