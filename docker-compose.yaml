@@ -30,7 +30,7 @@ services:
   spark:
     build: spark
     depends_on: 
-      - streamer
+      - flask-streamer
     ports:
       - 9999:9999
     environment:
