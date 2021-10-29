@@ -2,6 +2,7 @@
 import os, signal
 import json
 import time
+from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
 
 import subprocess
 
@@ -20,8 +21,8 @@ articles = db['articles']
 new_articles = db['new_articles']
 
 clf = pickle.load(open("models/news_classifier.pkl", "rb"))
-le = pickle.load(open("models/label_encoder.pkl", "rb"))
-tfidf = pickle.load(open("models/tfidf_vect.pkl", "rb"))
+count_vect = CountVectorizer(vocabulary=pickle.load(open("models/label_encoder.pkl", "rb")))
+tfidf = pickle.load(open("models/tfidf.pkl", "rb"))
 
 category_list = ['POLITICS', "WELLNESS", 'ENTERTAINMENT',
              "STYLE & BEAUTY", "TRAVEL", "PARENTING",
@@ -50,8 +51,11 @@ def load_model():
 # function to predict the flower using the model
 def predict(query_data):
     x = list(query_data.dict().values())
-    inp = tfidf.transform(x).toarray()
-    res = clf.predict(inp)
+    df = pd.DataFrame(x, columns=['data'])
+    df['data'] = df['data'].apply(process_text)
+    x_new_counts = count_vect.transform(df.data)
+    x_new_tfidf = tfidf.transform(x_new_counts)
+    res = clf.predict(x_new_tfidf)
     #prediction = le.inverse_transform(res)[0]
     prediction = category_list[res[0]]
     return prediction
@@ -69,7 +73,6 @@ def transformer(data):
 
 # function to train and save the model as part of the feedback loop
 def train_model():
-    from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
     from sklearn.preprocessing import LabelEncoder
     import pandas as pd
     from sklearn import svm
