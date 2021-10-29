@@ -29,7 +29,7 @@ articles = db['articles']
 new_articles = db['new_articles']
 
 clf = pickle.load(open("models/news_classifier.pkl", "rb"))
-count_vect = CountVectorizer(vocabulary=pickle.load(open("models/label_encoder.pkl", "rb")))
+count_vect = CountVectorizer(vocabulary=pickle.load(open("models/count_vector.pkl", "rb")))
 tfidf = pickle.load(open("models/tfidf.pkl", "rb"))
 
 category_list = ['POLITICS', "WELLNESS", 'ENTERTAINMENT',
