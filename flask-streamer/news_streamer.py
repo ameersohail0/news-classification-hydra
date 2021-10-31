@@ -41,7 +41,7 @@ def news_streamer(topic,timeout):
         try:
             for article in response.json()['articles']:
                 try:
-                    message = article["topic"]+"//"+article["title"]+"//"+article["summary"]                                                                                       
+                    message = article["topic"]+"//"+article["summary"]
                     print(f">>> {message.split('//')}")                                                                                           
                     p.send(TOPIC, bytes(message, encoding="utf8"))
                 except:

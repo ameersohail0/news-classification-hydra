@@ -13,28 +13,27 @@ import json
 
 # # MongoDB Setup
 from pymongo import MongoClient
-client = MongoClient()
 
 client = MongoClient('mongo', 27017)
 
 db = client['news_db']
 
-new_articles = db['new_articles']
+articles = db['articles']
 
 def handle_rdd(rdd):                                                                                                    
     if not rdd.isEmpty():                                                                                               
         try :
             global ss                                                                                                       
-            df = ss.createDataFrame(rdd, schema=['topic', 'title', 'summary'])                                                
+            df = ss.createDataFrame(rdd, schema=['category', 'short_description'])
             df.show()
             # df.write.saveAsTable(name='news_db.articles', format='mongo', mode='append')
             # df.write.format("mongo").mode("append").option("database","news_db").option("collection", "articles").save()
             results = df.toJSON().map(lambda j: json.loads(j)).collect()
             print(results)
             if len(results) > 1:
-                new_articles.insert_many(results)
-            elif len(results) == 1 :
-                new_articles.insert(results)
+                articles.insert_many(results)
+            elif len(results) == 1:
+                articles.insert(results)
         except:
             print("error occured")
             pass
@@ -65,8 +64,8 @@ print(lines)
 ss = SparkSession \
     .builder \
     .appName("NEWSTRAINER") \
-    .config("spark.mongodb.input.uri", "mongodb://mongo:27017/news_db.new_articles") \
-    .config("spark.mongodb.output.uri", "mongodb://mongo:27017/news_db.new_articles") \
+    .config("spark.mongodb.input.uri", "mongodb://mongo:27017/news_db.articles") \
+    .config("spark.mongodb.output.uri", "mongodb://mongo:27017/news_db.articles") \
     .getOrCreate()
     # .config("spark.mongodb.input.uri", "mongodb://"+os.environ['MONGO_SERVER']+"/news_db.articles") \
     # .config("spark.mongodb.output.uri", "mongodb://"+os.environ['MONGO_SERVER']+"/news_db.articles") \
@@ -79,7 +78,7 @@ ss.sparkContext.setLogLevel('WARN')
 
 # print(lines)
                                                                                                             
-transform = lines.map(lambda data: (data.split("//")[0], data.split("//")[1], data.split("//")[2]))
+transform = lines.map(lambda data: (data.split("//")[0], data.split("//")[1]))
 
 transform.foreachRDD(handle_rdd)                                                                                      
                                                                                                                         

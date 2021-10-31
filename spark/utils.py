@@ -41,20 +41,14 @@ def load_model():
 
 # function to predict the flower using the model
 def predict(query_data):
-    x = list(query_data.dict().values())
-
-    print(x)
-
-    df = pd.DataFrame(x, columns=['data'])
-    df['data'] = df['data'].apply(process_text)
-
-    x_new_counts = count_vect.transform(df.data)
+    data = query_data
+    x_new_counts = count_vect.transform(data.data)
     x_new_tfidf = tfidf.transform(x_new_counts)
+    predictions = clf.predict(x_new_tfidf)
+    prob = clf.predict_proba(x_new_tfidf)
+    probs = [prob[prediction] for prediction in predictions]
 
-    res = clf.predict(x_new_tfidf)
-    #prediction = le.inverse_transform(res)[0]
-    prediction = category_list[res[0]]
-    return prediction
+    return predictions, probs
 
 
 def transformer(data):

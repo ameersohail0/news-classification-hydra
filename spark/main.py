@@ -4,6 +4,8 @@ import requests
 from fastapi import FastAPI
 from pydantic import BaseModel
 from typing import List
+import scrapping
+from flask import jsonify
 
 from utils import load_model, predict, train_model, transformer
 
@@ -16,7 +18,7 @@ app.add_event_handler("startup", load_model)
 
 # class which is expected in the payload
 class QueryIn(BaseModel):
-    summary: str
+    url: str
 
 
 # class which is returned in the response
@@ -41,12 +43,13 @@ def ping():
 # Route to do the classifcation using the ML model defined.
 # Payload: QueryIn containing the parameters
 # Response: QueryOut containing the topic of news predicted (200)
-def classify_news(query_data: QueryIn):
-    tp = predict(query_data)
-    output = {
-        "topic": tp
-    }
-    return output
+def classify_news(query_url: QueryIn):
+    df, original_data, final_res = scrapping.web_scrapping(str(query_url))
+    predictions, probs = predict(df)
+
+    return jsonify({"pred": predictions, "probs": probs, "o_data": original_data})
+
+
 
 @app.post("/add_news", status_code=200)
 # Route to further train the model based on user input in form of feedback loop
