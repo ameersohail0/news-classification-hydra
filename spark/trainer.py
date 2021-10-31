@@ -57,7 +57,7 @@ def process_text(text):
 training_data = pd.read_json('/app/data/news_new.json', encoding='utf-8')
 training_data = training_data.dropna()
 training_data['short_description'] = training_data['short_description'].apply(process_text)
-cat_list = [category_list.index(i) for i in training_data[category]]
+cat_list = [category_list.index(i) for i in training_data["category"]]
 training_data['flag'] = cat_list
 
 count_vect = CountVectorizer()
