@@ -9,6 +9,7 @@ import time
 import pandas as pd
 
 from sklearn import svm
+from sklearn.calibration import CalibratedClassifierCV
 from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
@@ -99,8 +100,10 @@ def train_model():
         _,X_test,_,y_test = train_test_split(X_train_tfidf, data.flag,
                                                             test_size=0.25, random_state=9)
 
-        clf = svm.LinearSVC()  # Initializing the model instance
-        clf.fit(X_train_tfidf, data.flag)  # Training the model
+        svm_model = svm.LinearSVC()  # Initializing the model instance
+        clf = CalibratedClassifierCV(svm_model)
+        clf.fit(X_train_tfidf, data.flag) # Training the model
+        # clf.fit(X_train_tfidf, data.flag)  
 
         # Saving the model
         pickle.dump(clf, open('models/news_classifier.pkl', 'wb'))
