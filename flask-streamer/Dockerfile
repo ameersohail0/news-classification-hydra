@@ -29,6 +29,7 @@ RUN rm kafka_2.12-2.2.0.tgz
 RUN pip3 install kafka-python
 RUN pip3 install pandas
 RUN pip3 install gdown
+RUN pip3 install validators
 
 # Install dotenv, requests
 RUN pip3 install python-dotenv
@@ -68,8 +69,7 @@ COPY start_flask.sh /app/start_flask.sh
 RUN chmod u+x /app/start_flask.sh
 RUN dos2unix /app/start_flask.sh
 
-CMD /app/start_flask.sh
-
+CMD  export LC_ALL=C.UTF-8 && export LANG=C.UTF-8 && /app/start_flask.sh
 
 # CMD [ "python3", "-m" , "flask", "run", "--host=0.0.0.0"]
 
