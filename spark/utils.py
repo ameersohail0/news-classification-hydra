@@ -1,49 +1,32 @@
 # Import libraries
-import os, signal
-import json
-import time
-from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
-import nltk
-from nltk import word_tokenize
-from nltk.corpus import stopwords
-import re
-
-import nltk
-nltk.download('stopwords')
-nltk.download('punkt')
-
+import os
 import subprocess
 
-from trainer import *
+import json
+import pickle
+import time
+
+import pandas as pd
+
+from sklearn import svm
+from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
+
+from trainer import process_text, category_list
 
 # # MongoDB Setup
 from pymongo import MongoClient
-client = MongoClient()
 
 client = MongoClient('mongo', 27017)
 
 db = client['news_db']
-
 articles = db['articles']
 
-new_articles = db['new_articles']
-
+# load model and other functions
 clf = pickle.load(open("models/news_classifier.pkl", "rb"))
 count_vect = CountVectorizer(vocabulary=pickle.load(open("models/count_vector.pkl", "rb")))
 tfidf = pickle.load(open("models/tfidf.pkl", "rb"))
-
-category_list = ['POLITICS', "WELLNESS", 'ENTERTAINMENT',
-             "STYLE & BEAUTY", "TRAVEL", "PARENTING",
-             "FOOD & DRINK", "QUEER VOICES", "HEALTHY LIVING",
-             "BUSINESS", "COMEDY", "SPORTS", "HOME & LIVING",
-             "BLACK VOICES", "THE WORLDPOST", "WEDDINGS", "PARENTS",
-             "DIVORCE", "WOMEN", "IMPACT", "CRIME",
-             "MEDIA", "WEIRD NEWS", "WORLD NEWS", "TECH",
-             "GREEN", "TASTE", "RELIGION", "SCIENCE",
-             "MONEY", "STYLE", "ARTS & CULTURE", "ENVIRONMENT",
-             "WORLDPOST", "FIFTY", "GOOD NEWS", "LATINO VOICES",
-             "CULTURE & ARTS", "COLLEGE", "EDUCATION", "ARTS"]
-
 
 # function to load the model
 def load_model():
@@ -51,7 +34,7 @@ def load_model():
     clf = pickle.load(open("models/news_classifier.pkl", "rb"))
     # load data if empty
     if articles.count() == 0:
-        with open("/app/data/news_db.json", encoding = 'utf-8') as f:
+        with open("/app/data/news_new.json", encoding = 'utf-8') as f:
             data = json.load(f)
             articles.insert_many(data)
 
@@ -59,10 +42,15 @@ def load_model():
 # function to predict the flower using the model
 def predict(query_data):
     x = list(query_data.dict().values())
+
+    print(x)
+
     df = pd.DataFrame(x, columns=['data'])
     df['data'] = df['data'].apply(process_text)
+
     x_new_counts = count_vect.transform(df.data)
     x_new_tfidf = tfidf.transform(x_new_counts)
+
     res = clf.predict(x_new_tfidf)
     #prediction = le.inverse_transform(res)[0]
     prediction = category_list[res[0]]
@@ -81,22 +69,19 @@ def transformer(data):
 
 # function to train and save the model as part of the feedback loop
 def train_model():
-    from sklearn.preprocessing import LabelEncoder
-    import pandas as pd
-    from sklearn import svm
 
     # load the model
-    # global clf
-    # clf = pickle.load(open("models/news_classifier.pkl", "rb"))
+    global clf
+    clf = pickle.load(open("models/news_classifier.pkl", "rb"))
 
-    new_data = []
+    news_data = []
     for data in articles.find({}):
-        new_data.append(data)
+        news_data.append(data)
     
-    data = pd.DataFrame(new_data)
+    data = pd.DataFrame(news_data)
 
     if len(data) > 0:
-        data['summary'] = data['summary'].apply(process_text)
+        data['summary'] = data['short_description'].apply(process_text)
         cat_list = [category_list.index(i) for i in data['category']]
         data['flag'] = cat_list
 
@@ -106,13 +91,16 @@ def train_model():
         tfidf_transformer = TfidfTransformer()
         X_train_tfidf = tfidf_transformer.fit_transform(X_train_counts)
 
-        X_train, X_test, y_train, y_test = train_test_split(X_train_tfidf, data.flag,
+        _,X_test,_,y_test = train_test_split(X_train_tfidf, data.flag,
                                                             test_size=0.25, random_state=9)
 
-        clf_svm = svm.LinearSVC()  # Initializing the model instance
-        clf_svm.fit(X_train_tfidf, data.flag)  # Training the model
+        clf = svm.LinearSVC()  # Initializing the model instance
+        clf.fit(X_train_tfidf, data.flag)  # Training the model
+
         # Saving the model
-        pickle.dump(clf_svm, open('models/news_classifier.pkl', 'wb'))
+        pickle.dump(clf, open('models/news_classifier.pkl', 'wb'))
+        pickle.dump(count_vect, open('models/count_vector.pkl', 'wb'))
+        pickle.dump(tfidf_transformer, open('models/tfidf.pkl', 'wb'))
 
         model_predictions = clf.predict(X_test)
         acc = accuracy_score(y_test, model_predictions) * 100
@@ -121,60 +109,4 @@ def train_model():
             "message": "Training Successful",
             "accuracy": acc}
 
-
-    # if len(data) > 0:
-    #     data['len'] = data['summary'].str.len()
-    #     data['summary_parsed'] = data['summary'].apply(process_text)
-    #     data['topic_target'] = le.fit_transform(data['topic'])
-    #
-    #     X_train, X_test, y_train, y_test = train_test_split(
-    #         data['summary_parsed'],
-    #         data['topic_target'],
-    #         test_size=0.2,
-    #         random_state=8)
-    #
-    #     features_train = tfidf.transform(X_train).toarray()
-    #     labels_train = y_train
-    #
-    #     features_test = tfidf.transform(X_test).toarray()
-    #     labels_test = y_test
-    #
-    #     clf.fit(features_train, labels_train)
-    #
-    #     model_predictions = clf.predict(features_test)
-    #     acc = accuracy_score(labels_test, model_predictions) * 100
-    #     print('Accuracy: ', acc)
-    #     print(classification_report(labels_test, model_predictions))
-    #
-    #     # save the model
-    #     pickle.dump(clf, open("models/news_classifier.pkl", "wb"))
-    #
-    #     return {
-    #         "message" : "Training Successful",
-    #         "accuracy" : acc}
-
     return {"message" : "Not enough new data to train"}
-
-
-def process_text(text):
-    pattern = r'[0-9]'
-    pattern2 = r'([\.0-9]+)$'
-    text = str(text)
-    text = re.sub(pattern, '', text)
-    text = re.sub(pattern2, '', text)
-    text = str(text)
-    text = text.lower().replace('\n', ' ').replace('\r', '').strip()
-    text = re.sub(' +', ' ', text)
-    text = re.sub(r'[^\w\s]', '', text)
-
-    stop_words = set(stopwords.words('english'))
-    word_tokens = word_tokenize(text)
-    filtered_sentence = [w for w in word_tokens if not w in stop_words]
-    filtered_sentence = []
-    for w in word_tokens:
-        if w not in stop_words:
-            filtered_sentence.append(w)
-
-    text = " ".join(filtered_sentence)
-    return text
-
