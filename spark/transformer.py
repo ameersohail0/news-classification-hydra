@@ -19,7 +19,7 @@ client = MongoClient('mongo', 27017)
 
 db = client['news_db']
 
-new_articles = db['new_articles']
+articles = db['articles']
 
 def handle_rdd(rdd):                                                                                                    
     if not rdd.isEmpty():                                                                                               
@@ -32,9 +32,9 @@ def handle_rdd(rdd):
             results = df.toJSON().map(lambda j: json.loads(j)).collect()
             print(results)
             if len(results) > 1:
-                new_articles.insert_many(results)
-            elif len(results) == 1 :
-                new_articles.insert(results)
+                articles.insert_many(results)
+            elif len(results) == 1:
+                articles.insert(results)
         except:
             print("error occured")
             pass
@@ -79,7 +79,7 @@ ss.sparkContext.setLogLevel('WARN')
 
 # print(lines)
                                                                                                             
-transform = lines.map(lambda data: (data.split("//")[0], data.split("//")[1], data.split("//")[2]))
+transform = lines.map(lambda data: (data.split("//")[0], data.split("//")[1]))
 
 transform.foreachRDD(handle_rdd)                                                                                      
                                                                                                                         
