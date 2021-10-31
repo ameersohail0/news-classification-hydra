@@ -8,6 +8,10 @@ nltk.download('punkt')
 
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
+<<<<<<< HEAD
+=======
+import pandas as pd
+>>>>>>> b7d7fd1a6ce26a047c650dd13971dae114b39dd7
 
 import re
 import warnings
