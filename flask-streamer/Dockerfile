@@ -11,6 +11,11 @@ SHELL ["/bin/bash", "-c"]
 # Install apt dependencies
 RUN apt update
 
+# Adding environment variables
+RUN echo 'export LC_ALL=C.UTF-8' >> ~/.bashrc
+RUN echo 'export LANG=C.UTF-8' >> ~/.bashrc
+RUN source ~/.bashrc
+
 # Install dependencies
 RUN apt install -y dos2unix
 RUN apt install wget -y
@@ -33,6 +38,7 @@ RUN pip3 install gdown
 # Install dotenv, requests
 RUN pip3 install python-dotenv
 RUN pip3 install requests
+RUN pip3 install validators
 
 # Install Flask
 RUN pip3 install flask

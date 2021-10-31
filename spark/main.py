@@ -6,6 +6,7 @@ from pydantic import BaseModel
 from typing import List
 import scrapping
 from flask import jsonify
+import logging
 
 from utils import load_model, predict, train_model, transformer
 
@@ -44,7 +45,9 @@ def ping():
 # Payload: QueryIn containing the parameters
 # Response: QueryOut containing the topic of news predicted (200)
 def classify_news(query_url: QueryIn):
-    df, original_data, final_res = scrapping.web_scrapping(str(query_url))
+    print(query_url)
+    logging.log(msg=query_url, level=20)
+    df, original_data, final_res = scrapping.web_scrapping(query_url)
     predictions, probs = predict(df)
 
     return jsonify({"pred": predictions, "probs": probs, "o_data": original_data})

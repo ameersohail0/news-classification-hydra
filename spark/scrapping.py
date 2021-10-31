@@ -9,10 +9,13 @@ from nltk.tokenize import word_tokenize
 import nltk
 nltk.download('stopwords')
 nltk.download('punkt')
+import logging
 
 
 def web_scrapping(url):
-    r = requests.get(str(url))
+    logging.log(msg=url, level=20)
+    url = str(url).replace("'", "").replace('"', '')
+    r = requests.get(url)
     soup = BeautifulSoup(r.text, "html.parser")
     res_h3 = soup.findAll("h3")
     res_h3 = [BeautifulSoup(i.text).findAll("p") for i in res_h3]

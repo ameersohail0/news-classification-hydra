@@ -22,7 +22,7 @@ RUN pip3 install pyspark==2.4.6
 RUN pip3 install nltk
 RUN pip3 install numpy
 RUN pip3 install pandas
-RUN pip3 install scikit-learn==0.24.2
+RUN pip3 install scikit-learn
 RUN pip3 install flask
 RUN pip3 install bs4
 
@@ -32,7 +32,9 @@ RUN pip3 install pymongo
 # Install fastAPI
 RUN pip3 install uvicorn==0.14.0
 RUN pip3 install fastapi==0.68.0
-RUN pip3 install requests==2.26.0
+RUN pip3 install requests
+
+RUN pip3 install sklearn
 
 # Installing XGBoost
 # RUN apt install cmake -y
@@ -86,7 +88,7 @@ COPY data/news_new.json /app/data/news_new.json
 
 # # Application code
 COPY transformer.py /app/transformer.py
-COPY trainer.py /app/trainer.py
+
 
 # COPY XGBoost_model.pkl /app/XGBoost_model.pkl
 

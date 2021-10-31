@@ -38,28 +38,32 @@ def ping():
         return "ping trace method"
 
 
-@app.route("/classify_news",methods=["POST","TRACE"])
+@app.route("/classify_news",methods=["GET", "POST","TRACE"])
 def classify_news():
     global data, final_data
     if request.method == "POST":
         url = request.form.get("url")
         if validators.url(url):
             spark_url = SPARK_SERVER + 'classify_news'
-            r = requests.post(spark_url, data=str(url)).json()
-
-            predictions = r['pred']
-            probabilities = r['probs']
-            original_data = r['o_data']
-            data = []
-            num = 1
-            for o_data, pred, prob in zip(original_data, predictions, probabilities):
-                temp = {"num": num, "data": o_data, "pred": category_list[pred], "prob": round(prob * 100)}
-                data.append(temp)
-                num += 1
-            final_data = {"data": data, "len": len(data)}
-        else:
-            return render_template("index.html", data="invalid")
-    return render_template("admin/index.html", data=final_data)
+            try:
+                r = requests.post(spark_url, data=url)
+            except:
+                return "Backend server is starting up. please wait."
+            return r
+    #         print(r)
+    #         predictions = r['pred']
+    #         probabilities = r['probs']
+    #         original_data = r['o_data']
+    #         data = []
+    #         num = 1
+    #         for o_data, pred, prob in zip(original_data, predictions, probabilities):
+    #             temp = {"num": num, "data": o_data, "pred": category_list[pred], "prob": round(prob * 100)}
+    #             data.append(temp)
+    #             num += 1
+    #         final_data = {"data": data, "len": len(data)}
+    #     else:
+    #         return render_template("index.html", data="invalid")
+    # return render_template("admin/index.html", data=final_data)
 
 
 @app.route("/add_news",methods=["POST","TRACE"])

@@ -31,7 +31,7 @@
                 <div class="container-fluid px-4 px-lg-0">
                     <h1 class="fst-italic lh-1 mb-4">News Classifier</h1>
                     <p class="mb-5">Team Hydra Capstone Project</p>
-                    <form id="searchForm" action='{{ url_for("classify")}}' method="post" >
+                    <form id="searchForm" action='{{ url_for("classify_news")}}' method="post" >
                         <div class="row input-group-newsletter">
                             <div class="col"><input class="form-control" name="url" id="url" type="text" placeholder="Provide Input URL..." aria-label="Provide Input URL..." data-sb-validations="required" /></div>
                             <div class="col-auto"><button class="btn btn-primary" id="submitButton" type="submit" >Classify!</button></div>
