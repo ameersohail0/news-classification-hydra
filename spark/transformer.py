@@ -13,7 +13,6 @@ import json
 
 # # MongoDB Setup
 from pymongo import MongoClient
-client = MongoClient()
 
 client = MongoClient('mongo', 27017)
 
@@ -25,7 +24,7 @@ def handle_rdd(rdd):
     if not rdd.isEmpty():                                                                                               
         try :
             global ss                                                                                                       
-            df = ss.createDataFrame(rdd, schema=['topic', 'title', 'summary'])                                                
+            df = ss.createDataFrame(rdd, schema=['category', 'short_description'])
             df.show()
             # df.write.saveAsTable(name='news_db.articles', format='mongo', mode='append')
             # df.write.format("mongo").mode("append").option("database","news_db").option("collection", "articles").save()
@@ -65,8 +64,8 @@ print(lines)
 ss = SparkSession \
     .builder \
     .appName("NEWSTRAINER") \
-    .config("spark.mongodb.input.uri", "mongodb://mongo:27017/news_db.new_articles") \
-    .config("spark.mongodb.output.uri", "mongodb://mongo:27017/news_db.new_articles") \
+    .config("spark.mongodb.input.uri", "mongodb://mongo:27017/news_db.articles") \
+    .config("spark.mongodb.output.uri", "mongodb://mongo:27017/news_db.articles") \
     .getOrCreate()
     # .config("spark.mongodb.input.uri", "mongodb://"+os.environ['MONGO_SERVER']+"/news_db.articles") \
     # .config("spark.mongodb.output.uri", "mongodb://"+os.environ['MONGO_SERVER']+"/news_db.articles") \

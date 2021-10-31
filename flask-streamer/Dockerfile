@@ -38,6 +38,12 @@ RUN pip3 install requests
 RUN pip3 install flask
 
 # Copy existing database
+RUN mkdir /app/templates
+RUN mkdir /app/static
+COPY /templates /app/templates
+COPY /static /app/static
+
+# Copy existing database
 COPY news_articles.json /app/news_articles.json
 
 # Copy news stream
