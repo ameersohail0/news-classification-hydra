@@ -23,6 +23,8 @@ RUN pip3 install nltk
 RUN pip3 install numpy
 RUN pip3 install pandas
 RUN pip3 install scikit-learn==0.24.2
+RUN pip3 install flask
+RUN pip3 install bs4
 
 # Install PyMongo
 RUN pip3 install pymongo
@@ -71,6 +73,7 @@ COPY main.py /app/main.py
 COPY utils.py /app/utils.py
 RUN mkdir models
 
+COPY scrapping.py /app/scrapping.py
 COPY models/news_classifier.pkl /app/models/news_classifier.pkl
 COPY models/news_classifier_softmax.pkl /app/models/news_classifier_softmax.pkl
 COPY models/news_classifier_nb.pkl /app/models/news_classifier_nb.pkl
