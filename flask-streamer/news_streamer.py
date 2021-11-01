@@ -39,8 +39,11 @@ def news_streamer(topic, timeout):
         try:
             for article in response.json()['articles']:
                 try:
+<<<<<<< HEAD
                     if article['topic'] == "sport":
                         article['topic'] = "sports"
+=======
+>>>>>>> 338f8998158a0ee77a50359fe80d56997c35be7e
                     message = article["topic"].upper()+"//"+article["summary"]
                     print(f">>> {message.split('//')}")                                                                                           
                     p.send(TOPIC, bytes(message, encoding="utf8"))
