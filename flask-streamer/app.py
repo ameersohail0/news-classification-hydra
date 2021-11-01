@@ -65,7 +65,7 @@ def classify_news():
             final_data = {"data": data, "len": len(data)}
         else:
             return render_template("index.html", data="invalid")
-    return render_template("admin/index.html", data=final_data)
+    return render_template("classify/index.html", data=final_data)
 
 
 @app.route("/add_news", methods=["GET", "POST", "TRACE"])
@@ -82,7 +82,7 @@ def add_news():
         else:
             return {'status': 501, 'result': 'all required keys are not given'}
     elif request.method == "GET":
-        return render_template("admin/training.html")
+        return render_template("classify/training.html")
     elif request.method == "TRACE":
         return given_request
     
