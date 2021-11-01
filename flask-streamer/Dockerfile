@@ -43,6 +43,7 @@ RUN pip3 install validators
 
 # Install Flask
 RUN pip3 install flask
+RUN pip3 install flask-cors
 
 # Copy existing database
 RUN mkdir /app/templates
