@@ -40,7 +40,9 @@ category_list = ['POLITICS', "WELLNESS", 'ENTERTAINMENT',
                  "GREEN", "TASTE", "RELIGION", "SCIENCE",
                  "MONEY", "STYLE", "ARTS & CULTURE", "ENVIRONMENT",
                  "WORLDPOST", "FIFTY", "GOOD NEWS", "LATINO VOICES",
-                 "CULTURE & ARTS", "COLLEGE", "EDUCATION", "ARTS"]
+                 "CULTURE & ARTS", "COLLEGE", "EDUCATION", "ARTS",
+                 "GAMING", "BEAUTY", "ECONOMICS", "FINANACE",
+                 "WORLD", "NEWS"]
 
 
 # function to load the model
@@ -59,6 +61,9 @@ def load_model():
 # function to predict the flower using the model
 def predict(query_data):
     global count_vect, tfidf
+    clf = pickle.load(open("models/news_classifier.pkl", "rb"))
+    count_vect = CountVectorizer(vocabulary=pickle.load(open("models/count_vector.pkl", "rb")))
+    tfidf = pickle.load(open("models/tfidf.pkl", "rb"))
     data = query_data
     x_new_counts = count_vect.transform(data.data)
     x_new_tfidf = tfidf.transform(x_new_counts)

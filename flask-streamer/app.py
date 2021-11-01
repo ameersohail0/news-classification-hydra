@@ -22,7 +22,9 @@ category_list = ['POLITICS', "WELLNESS", 'ENTERTAINMENT',
                  "GREEN", "TASTE", "RELIGION", "SCIENCE",
                  "MONEY", "STYLE", "ARTS & CULTURE", "ENVIRONMENT",
                  "WORLDPOST", "FIFTY", "GOOD NEWS", "LATINO VOICES",
-                 "CULTURE & ARTS", "COLLEGE", "EDUCATION", "ARTS"]
+                 "CULTURE & ARTS", "COLLEGE", "EDUCATION", "ARTS",
+                 "GAMING", "BEAUTY", "ECONOMICS", "FINANACE",
+                 "WORLD", "NEWS"]
 
 
 @app.route("/", methods=["GET", "POST"])

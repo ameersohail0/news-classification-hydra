@@ -151,36 +151,25 @@
 										<form
 											class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search" style="padding-top: 24px;">
 											<div class="input-group">
+                                                <label for="topic">Topic:</label>
+                                                <select name="topic" id="topic" class="form-control bg-light border-0 small">
+                                                    <option value="news">News</option>
+                                                    <option value="sport">Sports</option>
+                                                    <option value="tech">Tech</option>
+                                                    <option value="world">World</option>
+                                                    <option value="finance">Finance</option>
+                                                    <option value="politics">Politics</option>
+                                                    <option value="business">business</option>
+                                                    <option value="economics">Economics</option>
+                                                    <option value="entertainment">Entertainment</option>
+                                                    <option value="beauty">Beauty</option>
+                                                    <option value="gaming">Gaming</option>
+                                                </select>
 												<label for="time">Time (in sec):</label>
-												<input name="time" type="number" class="form-control bg-light border-0 small" placeholder=""
-													aria-label="Search" aria-describedby="basic-addon2" min="1" max="30">
+												<input name="time" id="time" type="number" class="form-control bg-light border-0 small" placeholder=""
+													aria-label="Search" aria-describedby="basic-addon2" min="1" max="500">
 												<div class="input-group-append">
-													<button id="add_news" class="btn btn-primary" type="button">Add News</button>
-												</div>
-											</div>
-										</form>
-									</div>
-								</div>
-							</div>
-							<div class="col-xl-12 col-lg-7">
-								<div class="card shadow mb-4">
-									<!-- Card Header - Dropdown -->
-									<div
-										class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-										<h6 class="m-0 font-weight-bold text-primary">Train</h6>
-										<div class="dropdown no-arrow">
-											<a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
-												data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-											</a>
-										</div>
-									</div>
-									<!-- Card Body -->
-									<div class="card-body" style="height: 130px;">
-										<form
-											class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search" style="padding-top: 24px;">
-											<div class="input-group" style="width: 260%">
-												<div class="input-group-append" style="width: 100%">
-													<button id="train" class="btn btn-primary" type="button" style="width: 100%; border-bottom-left-radius: 5px; border-top-left-radius: 5px;">Train</button>
+													<button id="add_news_train" class="btn btn-primary" type="button">Add News & Train</button>
 												</div>
 											</div>
 										</form>
@@ -261,22 +250,28 @@
 
     <script>
         
-        document.getElementById("add_news").addEventListener("click", function() {
+        document.getElementById("add_news_train").addEventListener("click", function() {
             var xhr = new XMLHttpRequest();
+            var time = document.getElementById("time").value;
+            var topicList = document.getElementById("topic");
+            var text = topicList.options[topicList.selectedIndex].value;
             xhr.open("POST", "http://localhost:5000/add_news", true);
             xhr.setRequestHeader('Content-Type', 'application/json');
             xhr.send(JSON.stringify({
-                topic: "football",
-                timeout: "120"
+                topic: text,
+                timeout: time
             }));
-        });
-
-        document.getElementById("train").addEventListener("click", function() {
-            var xhr = new XMLHttpRequest();
             xhr.open("POST", "http://localhost:5000/train", true);
             xhr.setRequestHeader('Content-Type', 'application/json');
             xhr.send(JSON.stringify({}));
         });
+
+        // document.getElementById("train").addEventListener("click", function() {
+        //     var xhr = new XMLHttpRequest();
+        //     xhr.open("POST", "http://localhost:5000/train", true);
+        //     xhr.setRequestHeader('Content-Type', 'application/json');
+        //     xhr.send(JSON.stringify({}));
+        // });
 
     </script>
 	
