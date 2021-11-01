@@ -80,6 +80,9 @@ def add_news():
             proc1 = subprocess.Popen(f"python3 /app/news_streamer.py '{topic}' {given_request['timeout']}", shell=True)
             url = SPARK_SERVER + "add_news"
             r = requests.post(url, json=given_request)
+            
+            url = SPARK_SERVER + "train"
+            r = requests.post(url)
             return {'status': 201, 'result': r.json()}
         else:
             return {'status': 501, 'result': 'all required keys are not given'}

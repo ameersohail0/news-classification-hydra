@@ -97,8 +97,12 @@ def train_model():
     news_data = []
     for data in articles.find({}):
         news_data.append(data)
+        if(data['category'] not in category_list):
+            category_list.append(data['category'])
 
     data = pd.DataFrame(news_data)
+
+    print("Loaded data for training")
 
     if len(data) > 0:
         data['summary'] = data['short_description'].apply(process_text)
@@ -114,11 +118,15 @@ def train_model():
         _, X_test, _, y_test = train_test_split(X_train_tfidf, data.flag,
                                                 test_size=0.25, random_state=9)
 
+        print("creating model for training")
+
         svm_model = svm.LinearSVC()  # Initializing the model instance
         clf = CalibratedClassifierCV(svm_model)
+        print("Training ... ")
         clf.fit(X_train_tfidf, data.flag)  # Training the model
-        # clf.fit(X_train_tfidf, data.flag)  
+        # clf.fit(X_train_tfidf, data.flag)
 
+        print("Model trainied successfully! Saving the models")
         # Saving the model
         pickle.dump(clf, open('models/news_classifier.pkl', 'wb'))
         pickle.dump(count_vect, open('models/count_vector.pkl', 'wb'))
