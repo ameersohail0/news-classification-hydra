@@ -206,7 +206,6 @@
 
             </div>
             <!-- End of Main Content -->
-
             <!-- Footer -->
             <footer class="sticky-footer bg-white">
                 <div class="container my-auto">
@@ -245,9 +244,9 @@
     <script src="{{ url_for('static', filename='classify/js/demo/chart-area-demo.js') }}"></script>
     <script src="{{ url_for('static', filename='classify/js/demo/chart-pie-demo.js') }}"></script>
 
-    <script>
-        
+    <script>        
         document.getElementById("add_news_train").addEventListener("click", function() {
+            alert("Model training has started please wait.");
             var xhr = new XMLHttpRequest();
             var time = document.getElementById("time").value;
             var topicList = document.getElementById("topic");
@@ -258,15 +257,17 @@
                 topic: text,
                 timeout: time
             }));
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState == XMLHttpRequest.DONE) {
+                    alert("Model Training Succesful!")
+                    var result = xhr.responseText.JSON()['result'];
+                    var acc = result['accuracy'];
+                    var message = result['message'];   
+                    var msg = message + " with accuracy: " + Math.round((acc + Number.EPSILON) * 100) / 100 + "%";
+                    alert(msg);
+                }
+            }
         });
-
-        // document.getElementById("train").addEventListener("click", function() {
-        //     var xhr = new XMLHttpRequest();
-        //     xhr.open("POST", "http://localhost:5000/train", true);
-        //     xhr.setRequestHeader('Content-Type', 'application/json');
-        //     xhr.send(JSON.stringify({}));
-        // });
-
     </script>
 	
 </body>
