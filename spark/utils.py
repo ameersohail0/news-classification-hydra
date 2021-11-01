@@ -42,7 +42,7 @@ category_list = ['POLITICS', "WELLNESS", 'ENTERTAINMENT',
                  "WORLDPOST", "FIFTY", "GOOD NEWS", "LATINO VOICES",
                  "CULTURE & ARTS", "COLLEGE", "EDUCATION", "ARTS",
                  "GAMING", "BEAUTY", "ECONOMICS", "FINANACE",
-                 "WORLD", "NEWS"]
+                 "WORLD", "NEWS", "FINANCE"]
 
 
 # function to load the model
@@ -60,7 +60,6 @@ def load_model():
 
 # function to predict the flower using the model
 def predict(query_data):
-    global count_vect, tfidf
     clf = pickle.load(open("models/news_classifier.pkl", "rb"))
     count_vect = CountVectorizer(vocabulary=pickle.load(open("models/count_vector.pkl", "rb")))
     tfidf = pickle.load(open("models/tfidf.pkl", "rb"))
@@ -104,7 +103,7 @@ def train_model():
         data['summary'] = data['short_description'].apply(process_text)
         cat_list = [category_list.index(i) for i in data['category']]
         data['flag'] = cat_list
-
+        print("done: loading data")
         count_vect = CountVectorizer()
         X_train_counts = count_vect.fit_transform(data.summary)
 
@@ -113,16 +112,17 @@ def train_model():
 
         _, X_test, _, y_test = train_test_split(X_train_tfidf, data.flag,
                                                 test_size=0.25, random_state=9)
-
+        print("done: vectorizing data")
         svm_model = svm.LinearSVC()  # Initializing the model instance
         clf = CalibratedClassifierCV(svm_model)
         clf.fit(X_train_tfidf, data.flag)  # Training the model
         # clf.fit(X_train_tfidf, data.flag)  
-
+        print("done: model training")
         # Saving the model
         pickle.dump(clf, open('models/news_classifier.pkl', 'wb'))
         pickle.dump(count_vect, open('models/count_vector.pkl', 'wb'))
         pickle.dump(tfidf_transformer, open('models/tfidf.pkl', 'wb'))
+        print("done: pickle save")
 
         model_predictions = clf.predict(X_test)
         acc = accuracy_score(y_test, model_predictions) * 100

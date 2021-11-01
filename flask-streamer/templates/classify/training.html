@@ -166,8 +166,7 @@
                                                     <option value="gaming">Gaming</option>
                                                 </select>
 												<label for="time">Time (in sec):</label>
-												<input name="time" id="time" type="number" class="form-control bg-light border-0 small" placeholder=""
-													aria-label="Search" aria-describedby="basic-addon2" min="1" max="500">
+                                                <input type="number" id="time" name="time" min="30" max="500" value="30" required>
 												<div class="input-group-append">
 													<button id="add_news_train" class="btn btn-primary" type="button">Add News & Train</button>
 												</div>
@@ -192,13 +191,11 @@
                                 <!-- Card Body -->
                                 <div class="card-body">
 									<div style="background-color: white; border: 1px dashed#C0C0C0;  padding: 15px; color:black;">
-										<h5>Add News:</h5>
-										<h5>1. Provide the input time(integer) in seconds.</h5>
-										<h5>2. New news articles will be fetched for training for given amount of time(input).</h5>
-										<hr>
-										<h5>Retrain:</h5>
-										<h5>1. Click train button to retrain the model.</h5>
-										<h5>Tip: Use Add news first to add new news articles for training.</h5>
+										<h5>Add News & Retrain:</h5>
+                                        <h5>1. Select a news category to add.</h5>
+										<h5>2. Provide the input time(integer) in seconds. Minimum time in seconds is 30.</h5>
+										<h5>3. New news articles will be fetched for training for given amount of time(input).</h5>
+                                        <h5>4. After adding the news articles the model will be retrained with the new data.</h5>
 									</div>
                                 </div>
                             </div>
@@ -261,9 +258,6 @@
                 topic: text,
                 timeout: time
             }));
-            xhr.open("POST", "http://localhost:5000/train", true);
-            xhr.setRequestHeader('Content-Type', 'application/json');
-            xhr.send(JSON.stringify({}));
         });
 
         // document.getElementById("train").addEventListener("click", function() {
