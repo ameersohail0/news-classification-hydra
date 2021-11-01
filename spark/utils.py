@@ -45,8 +45,10 @@ category_list = ['POLITICS', "WELLNESS", 'ENTERTAINMENT',
 
 # function to load the model
 def load_model():
-    global clf
+    global clf, count_vect, tfidf
     clf = pickle.load(open("models/news_classifier.pkl", "rb"))
+    count_vect = CountVectorizer(vocabulary=pickle.load(open("models/count_vector.pkl", "rb")))
+    tfidf = pickle.load(open("models/tfidf.pkl", "rb"))
     # load data if empty
     if articles.count() == 0:
         with open("/app/data/news_new.json", encoding='utf-8') as f:
