@@ -11,14 +11,14 @@ ___
         b. Ramp-up period (seconds): 300
         c. Loop Count: 3
 
-![alt text](https://github.com/ameersohail0/news-classification-hydra/blob/dcb0f19e539db810109701e0f0f9431d5d616f03/JMeter_results/JMeter_Repeat_visit_Group.PNG "Repeat visit") 
+![alt text](https://github.com/ameersohail0/news-classification-hydra/blob/dcb0f19e539db810109701e0f0f9431d5d616f03/JMeter_results/JMeter_First_time_visit_Group.PNG "Repeat visit") 
 
 - ###### Configuration of "Repeat visit":
         a. Number of Threads (users): 300
         b. Ramp-up period (seconds): 300
         c. Loop Count: 3
 
-![alt text](https://github.com/ameersohail0/news-classification-hydra/blob/dcb0f19e539db810109701e0f0f9431d5d616f03/JMeter_results/JMeter_First_time_visit_Group.PNG "Repeat visit") 
+![alt text](https://github.com/ameersohail0/news-classification-hydra/blob/dcb0f19e539db810109701e0f0f9431d5d616f03/JMeter_results/JMeter_Repeat_visit_Group.PNG "Repeat visit") 
 
 
 - #### Sampler result tree raw output:
