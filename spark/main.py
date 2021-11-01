@@ -1,12 +1,8 @@
 import uvicorn
-import os
-import requests
 from fastapi import FastAPI
-from pydantic import BaseModel
 from typing import List
+from pydantic import BaseModel
 import scrapping
-from flask import jsonify
-import logging
 
 from utils import load_model, predict, train_model, transformer
 
@@ -17,6 +13,7 @@ app = FastAPI(title="PySpark News Classifier", docs_url="/")
 # this will train the model and keep it loaded for prediction.
 app.add_event_handler("startup", load_model)
 
+
 # class which is expected in the payload
 class QueryIn(BaseModel):
     url: str
@@ -24,14 +21,18 @@ class QueryIn(BaseModel):
 
 # class which is returned in the response
 class QueryOut(BaseModel):
-    topic: str
+    predictions: List[int] = []
+    probabilities: List[float] = []
+    o_data: List[str] = []
 
 # class TrainIn(BaseModel):
 #     summary: str
 #     topic: str
 
+
 class DataIn(BaseModel):
     timeout: int
+
 
 # Route definitions
 @app.get("/ping")
@@ -40,18 +41,16 @@ def ping():
     return {"ping": "pong"}
 
 
-@app.post("/classify_news", response_model=QueryOut, status_code=200)
-# Route to do the classifcation using the ML model defined.
+@app.post("/classify_news", response_model=QueryOut, response_model_exclude_unset=True, status_code=200)
+# Route to do the classification using the ML model defined.
 # Payload: QueryIn containing the parameters
 # Response: QueryOut containing the topic of news predicted (200)
 def classify_news(query_url: QueryIn):
-    print(query_url)
-    logging.log(msg=query_url, level=20)
-    df, original_data, final_res = scrapping.web_scrapping(query_url)
+    url = str(query_url).replace("url=", "").replace("'", "")
+    df, original_data = scrapping.web_scrapping(url)
     predictions, probs = predict(df)
 
-    return jsonify({"pred": predictions, "probs": probs, "o_data": original_data})
-
+    return {"predictions": predictions, "probabilities": probs, "o_data": original_data}
 
 
 @app.post("/add_news", status_code=200)
@@ -61,7 +60,8 @@ def classify_news(query_url: QueryIn):
 def add_news(data: DataIn):
     transformer(data)
     # response = requests.post("/reload_model")
-    return {"message" : "news added to database successfully"}
+    return {"message": "news added to database successfully"}
+
 
 @app.post("/train", status_code=200)
 # Route to further train the model based on user input in form of feedback loop
