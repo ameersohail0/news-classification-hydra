@@ -1,9 +1,12 @@
 from flask import Flask, request, render_template
+from flask_cors import CORS, cross_origin
 import requests
 import validators
 import subprocess
 
 app = Flask(__name__)
+cors = CORS(app)
+app.config['CORS_HEADERS'] = 'Content-Type'
 
 SPARK_SERVER = "http://spark:9999/"
 data = []
@@ -66,23 +69,27 @@ def classify_news():
 
 
 @app.route("/add_news", methods=["GET", "POST", "TRACE"])
+@cross_origin()
 def add_news():
-    # given_request = request.get_json()
-    # if request.method == "POST":
-    #     if {'timeout', 'topic'} == set(given_request.keys()):
-    #         topic = given_request.pop('topic')
-    #         proc1 = subprocess.Popen(f"python3 /app/news_streamer.py '{topic}' {given_request['timeout']}", shell=True)
-    #         url = SPARK_SERVER + "add_news"
-    #         r = requests.post(url, json=given_request)
-    #         return {'status': 201, 'result': r.json()}
-    #     else:
-    #         return {'status': 501, 'result': 'all required keys are not given'}
-    # elif request.method == "TRACE":
-    #     return given_request
-    return render_template("admin/training.html")
+    given_request = request.get_json()
+    if request.method == "POST":
+        if {'timeout', 'topic'} == set(given_request.keys()):
+            topic = given_request.pop('topic')
+            proc1 = subprocess.Popen(f"python3 /app/news_streamer.py '{topic}' {given_request['timeout']}", shell=True)
+            url = SPARK_SERVER + "add_news"
+            r = requests.post(url, json=given_request)
+            return {'status': 201, 'result': r.json()}
+        else:
+            return {'status': 501, 'result': 'all required keys are not given'}
+    elif request.method == "GET":
+        return render_template("admin/training.html")
+    elif request.method == "TRACE":
+        return given_request
+    
 
 
 @app.route("/train", methods=["POST", "TRACE"])
+@cross_origin()
 def train():
     given_request = request.get_json()
     if request.method == "POST":

@@ -155,7 +155,7 @@
 												<input name="time" type="number" class="form-control bg-light border-0 small" placeholder=""
 													aria-label="Search" aria-describedby="basic-addon2" min="1" max="30">
 												<div class="input-group-append">
-													<button class="btn btn-primary" type="button">Add News</button>
+													<button id="add_news" class="btn btn-primary" type="button">Add News</button>
 												</div>
 											</div>
 										</form>
@@ -180,7 +180,7 @@
 											class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search" style="padding-top: 24px;">
 											<div class="input-group" style="width: 260%">
 												<div class="input-group-append" style="width: 100%">
-													<button class="btn btn-primary" type="button" style="width: 100%; border-bottom-left-radius: 5px; border-top-left-radius: 5px;">Train</button>
+													<button id="train" class="btn btn-primary" type="button" style="width: 100%; border-bottom-left-radius: 5px; border-top-left-radius: 5px;">Train</button>
 												</div>
 											</div>
 										</form>
@@ -258,6 +258,27 @@
     <!-- Page level custom scripts -->
     <script src="{{ url_for('static', filename='classify/js/demo/chart-area-demo.js') }}"></script>
     <script src="{{ url_for('static', filename='classify/js/demo/chart-pie-demo.js') }}"></script>
+
+    <script>
+        
+        document.getElementById("add_news").addEventListener("click", function() {
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "http://localhost:5000/add_news", true);
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.send(JSON.stringify({
+                topic: "football",
+                timeout: "120"
+            }));
+        });
+
+        document.getElementById("train").addEventListener("click", function() {
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "http://localhost:5000/train", true);
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.send(JSON.stringify({}));
+        });
+
+    </script>
 	
 </body>
 
