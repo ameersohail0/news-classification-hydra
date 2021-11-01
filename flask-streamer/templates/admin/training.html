@@ -58,14 +58,14 @@
             <div class="sidebar-heading">
                 Training
             </div>
+
             <!-- Nav Item - Pages Collapse Menu -->
             <li class="nav-item">
-                <a class="nav-link collapsed" href="{{url_for('add_news')}}">
+                <a class="nav-link collapsed" href="#">
                     <i class="fas fa-fw fa-cog"></i>
                     <span>Add News &amp; Retrain</span>
                 </a>
             </li>
-
             <!-- Divider -->
             <hr class="sidebar-divider">
 
@@ -76,6 +76,7 @@
 
         </ul>
         <!-- End of Sidebar -->
+
 
         <!-- Content Wrapper -->
         <div id="content-wrapper" class="d-flex flex-column">
@@ -117,25 +118,82 @@
                             </a>
                         </li>
                     </ul>
+
                 </nav>
                 <!-- End of Topbar -->
 
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
-
                     <!-- Page Heading -->
                     <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                        <h1 class="h3 mb-0 text-gray-800">Classify News</h1>
+                        <h1 class="h3 mb-0 text-gray-800">ADD NEWS</h1>
                     </div>
-
+					
                     <!-- Content Row -->
-                    <div class="row" style="width: 152%;">
-                        <div class="col-xl-8 col-lg-7">
+                    <div class="row">
+
+                        <!-- Area Chart -->
+						<div style="width: 60%">
+							<div class="col-xl-12 col-lg-7">
+								<div class="card shadow mb-4">
+									<!-- Card Header - Dropdown -->
+									<div
+										class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+										<h6 class="m-0 font-weight-bold text-primary">Add News</h6>
+										<div class="dropdown no-arrow">
+											<a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
+												data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+											</a>
+										</div>
+									</div>
+									<!-- Card Body -->
+									<div class="card-body" style="height: 130px;">
+										<form
+											class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search" style="padding-top: 24px;">
+											<div class="input-group">
+												<label for="time">Time (in sec):</label>
+												<input name="time" type="number" class="form-control bg-light border-0 small" placeholder=""
+													aria-label="Search" aria-describedby="basic-addon2" min="1" max="30">
+												<div class="input-group-append">
+													<button class="btn btn-primary" type="button">Add News</button>
+												</div>
+											</div>
+										</form>
+									</div>
+								</div>
+							</div>
+							<div class="col-xl-12 col-lg-7">
+								<div class="card shadow mb-4">
+									<!-- Card Header - Dropdown -->
+									<div
+										class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+										<h6 class="m-0 font-weight-bold text-primary">Train</h6>
+										<div class="dropdown no-arrow">
+											<a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
+												data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+											</a>
+										</div>
+									</div>
+									<!-- Card Body -->
+									<div class="card-body" style="height: 130px;">
+										<form
+											class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search" style="padding-top: 24px;">
+											<div class="input-group" style="width: 260%">
+												<div class="input-group-append" style="width: 100%">
+													<button class="btn btn-primary" type="button" style="width: 100%; border-bottom-left-radius: 5px; border-top-left-radius: 5px;">Train</button>
+												</div>
+											</div>
+										</form>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="col-xl-4 col-lg-5">
                             <div class="card shadow mb-4">
                                 <!-- Card Header - Dropdown -->
                                 <div
                                     class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                    <h6 class="m-0 font-weight-bold text-primary">Predictions</h6>
+                                    <h6 class="m-0 font-weight-bold text-primary">Usage</h6>
                                     <div class="dropdown no-arrow">
                                         <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
                                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -144,50 +202,15 @@
                                 </div>
                                 <!-- Card Body -->
                                 <div class="card-body">
-                                    <!-- Content Column -->
-                                    {% if data=={} %}
-                                        <script>
-                                                location.replace("{{url_for("home")}}")
-                                        </script>
-                                    {% else %}
-                                        <table id="data" class="table table-striped table-bordered" cellspacing="0" width="100%">
-                                            <thead>
-                                                <tr>
-                                                    <th>S.No.</th>
-                                                    <th>News</th>
-                                                    <th>Prediction</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {% for i in data['data'] %}
-                                                    <tr>
-                                                        <td>{{i['num']}}</td>
-                                                        <td>
-                                                            <div class="card shadow mb-4">
-                                                                <!-- Card Header - Accordion -->
-                                                                <a href="#collapseCardExample-{{i['num']}}" class="d-block card-header py-3" data-toggle="collapse"
-                                                                    role="button" aria-expanded="true" aria-controls="collapseCardExample">
-                                                                    <h6 class="m-0 font-weight-bold text-primary">{{i['data']}}</h6>
-                                                                </a>
-                                                                <!-- Card Content - Collapse -->
-                                                                <div class="collapse" id="collapseCardExample-{{i['num']}}">
-                                                                    <div class="card-body">
-                                                                        <h5>Probability of prediction:</h5>
-                                                                        <div class="progress-circle progress-{{i['prob']}}"><span>{{i['prob']}}</span></div>
-                                                                        <div class="row">
-                                                                            <h6 style="color: #66b8ff;">{{i['pred']}}: {{i['prob']}}%</h6>
-                                                                            <h6 style="margin-left: 9px; color: #787575;">OTHERS: {{100 - i['prob']}}%</h6>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </td>
-                                                        <td class="">{{i['pred']}}</td>
-                                                    </tr>
-                                                {% endfor %}
-                                            </tbody>
-                                        </table>
-                                    {% endif %}
+									<div style="background-color: white; border: 1px dashed#C0C0C0;  padding: 15px; color:black;">
+										<h5>Add News:</h5>
+										<h5>1. Provide the input time(integer) in seconds.</h5>
+										<h5>2. New news articles will be fetched for training for given amount of time(input).</h5>
+										<hr>
+										<h5>Retrain:</h5>
+										<h5>1. Click train button to retrain the model.</h5>
+										<h5>Tip: Use Add news first to add new news articles for training.</h5>
+									</div>
                                 </div>
                             </div>
                         </div>
@@ -219,8 +242,6 @@
         <i class="fas fa-angle-up"></i>
     </a>
 
-
-
     <!-- Bootstrap core JavaScript-->
     <script src="{{ url_for('static', filename='classify/vendor/jquery/jquery.min.js') }}"></script>
     <script src="{{ url_for('static', filename='classify/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
@@ -237,35 +258,7 @@
     <!-- Page level custom scripts -->
     <script src="{{ url_for('static', filename='classify/js/demo/chart-area-demo.js') }}"></script>
     <script src="{{ url_for('static', filename='classify/js/demo/chart-pie-demo.js') }}"></script>
-	<script>
-		$(document).ready(function(){
-		$('#data').before('<div id="entries" style="margin-right: 3px;float: right;"></div>');
-		$('#data').after('<div id="nav" style="margin-right: 3px;float: right;">Pages:  </div>');
-            var rowsShown = 10;
-            var rowsTotal = $('#data tbody tr').length;
-            var numPages = Math.ceil(rowsTotal/rowsShown);
-            for(i = 0;i < numPages;i++) {
-                var pageNum = i + 1;
-                $('#nav').append('<a href="#" rel="'+i+'">'+pageNum+'</a> ');
-            }
-            $('#data tbody tr').hide();
-            $('#data tbody tr').slice(0, rowsShown).show();
-            $('#nav a:first').addClass('active');
-            $('#nav a').bind('click', function(){
-
-                $('#nav a').removeClass('active');
-                $(this).addClass('active');
-                var currPage = $(this).attr('rel');
-                var startItem = currPage * rowsShown;
-                var endItem = startItem + rowsShown;
-                $("#entries" ).empty();
-                $('#entries').append('Showing: ' + (startItem+1) + ' to ' + endItem + ' of ' + rowsTotal + ' predictions');
-                $('#data tbody tr').css('opacity','0.0').hide().slice(startItem, endItem).
-                css('display','table-row').animate({opacity:1}, 300);
-            });
-        });
-	</script>
-
+	
 </body>
 
 </html>

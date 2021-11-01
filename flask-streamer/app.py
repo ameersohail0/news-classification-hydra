@@ -65,20 +65,21 @@ def classify_news():
     return render_template("admin/index.html", data=final_data)
 
 
-@app.route("/add_news", methods=["POST", "TRACE"])
+@app.route("/add_news", methods=["GET", "POST", "TRACE"])
 def add_news():
-    given_request = request.get_json()
-    if request.method == "POST":
-        if {'timeout', 'topic'} == set(given_request.keys()):
-            topic = given_request.pop('topic')
-            proc1 = subprocess.Popen(f"python3 /app/news_streamer.py '{topic}' {given_request['timeout']}", shell=True)
-            url = SPARK_SERVER + "add_news"
-            r = requests.post(url, json=given_request)
-            return {'status': 201, 'result': r.json()}
-        else:
-            return {'status': 501, 'result': 'all required keys are not given'}
-    elif request.method == "TRACE":
-        return given_request
+    # given_request = request.get_json()
+    # if request.method == "POST":
+    #     if {'timeout', 'topic'} == set(given_request.keys()):
+    #         topic = given_request.pop('topic')
+    #         proc1 = subprocess.Popen(f"python3 /app/news_streamer.py '{topic}' {given_request['timeout']}", shell=True)
+    #         url = SPARK_SERVER + "add_news"
+    #         r = requests.post(url, json=given_request)
+    #         return {'status': 201, 'result': r.json()}
+    #     else:
+    #         return {'status': 501, 'result': 'all required keys are not given'}
+    # elif request.method == "TRACE":
+    #     return given_request
+    return render_template("admin/training.html")
 
 
 @app.route("/train", methods=["POST", "TRACE"])
