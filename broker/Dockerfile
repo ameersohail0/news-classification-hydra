@@ -12,6 +12,7 @@ SHELL ["/bin/bash", "-c"]
 RUN apt update
 
 # Install dependencies
+RUN apt install -y dos2unix
 RUN apt install wget -y
 RUN apt install python3 -y
 RUN apt install python3-pip -y
@@ -34,6 +35,7 @@ RUN pip3 install kafka-python
 # adding broker script
 COPY broker.sh /app/broker.sh
 RUN chmod u+x /app/broker.sh
+RUN dos2unix /app/broker.sh
 
 # copy modified server properties
 COPY server.properties /app/kafka/config/server.properties

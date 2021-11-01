@@ -18,26 +18,25 @@ services:
       KAFKA_BROKER_ID: 0
       KAFKA_ZOOKEEPER_CONNECT: zookeper:2181
 
-  streamer:
-    build: streamer
+  flask-streamer:
+    build: flask-streamer
+    ports:
+      - 5000:5000
     depends_on:
-      - broker
+      - spark
     environment: 
       KAFKA_BROKER: broker:9092
 
   spark:
     build: spark
     depends_on: 
-      - streamer
+      - broker
+    ports:
+      - 9999:9999
     environment:
       KAFKA_BROKER: broker:9092
       MONGO_SERVER: mongo:27017
       MONGO_PORT: 27017
-
-  flask:
-    build: flask
-    ports:
-      - 5000:5000
 
   mongo:
     image: mongo:latest
