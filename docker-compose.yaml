@@ -23,14 +23,14 @@ services:
     ports:
       - 5000:5000
     depends_on:
-      - broker
+      - spark
     environment: 
       KAFKA_BROKER: broker:9092
 
   spark:
     build: spark
     depends_on: 
-      - flask-streamer
+      - broker
     ports:
       - 9999:9999
     environment:
