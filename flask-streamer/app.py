@@ -1,5 +1,4 @@
 from flask import Flask, request, render_template
-import os
 import requests
 import validators
 import subprocess
@@ -23,72 +22,71 @@ category_list = ['POLITICS', "WELLNESS", 'ENTERTAINMENT',
                  "CULTURE & ARTS", "COLLEGE", "EDUCATION", "ARTS"]
 
 
-@app.route("/",methods=["GET", "POST"])
+@app.route("/", methods=["GET", "POST"])
 def home():
     return render_template("index.html")
 
 
-@app.route("/ping",methods=["GET","TRACE"])
+@app.route("/ping", methods=["GET", "TRACE"])
 def ping():
     if request.method == "GET":
         url = SPARK_SERVER + "ping"
         r = requests.get(url)
-        return {'status':200, 'result':r.json()}
+        return {'status': 200, 'result': r.json()}
     elif request.method == "TRACE":
         return "ping trace method"
 
 
-@app.route("/classify_news",methods=["GET", "POST","TRACE"])
+@app.route("/classify_news", methods=["GET", "POST", "TRACE"])
 def classify_news():
     global data, final_data
     if request.method == "POST":
         url = request.form.get("url")
         if validators.url(url):
             spark_url = SPARK_SERVER + 'classify_news'
+            pload = {'url': url}
             try:
-                r = requests.post(spark_url, data=url)
+                r = requests.post(spark_url, json=pload).json()
             except:
                 return "Backend server is starting up. please wait."
-            return r
-    #         print(r)
-    #         predictions = r['pred']
-    #         probabilities = r['probs']
-    #         original_data = r['o_data']
-    #         data = []
-    #         num = 1
-    #         for o_data, pred, prob in zip(original_data, predictions, probabilities):
-    #             temp = {"num": num, "data": o_data, "pred": category_list[pred], "prob": round(prob * 100)}
-    #             data.append(temp)
-    #             num += 1
-    #         final_data = {"data": data, "len": len(data)}
-    #     else:
-    #         return render_template("index.html", data="invalid")
-    # return render_template("admin/index.html", data=final_data)
+
+            predictions = r['predictions']
+            probabilities = r['probabilities']
+            original_data = r['o_data']
+            data = []
+            num = 1
+            for o_data, pred, prob in zip(original_data, predictions, probabilities):
+                temp = {"num": num, "data": o_data, "pred": category_list[pred], "prob": round(prob * 100)}
+                data.append(temp)
+                num += 1
+            final_data = {"data": data, "len": len(data)}
+        else:
+            return render_template("index.html", data="invalid")
+    return render_template("admin/index.html", data=final_data)
 
 
-@app.route("/add_news",methods=["POST","TRACE"])
+@app.route("/add_news", methods=["POST", "TRACE"])
 def add_news():
     given_request = request.get_json()
     if request.method == "POST":
-        if {'timeout','topic'} == set(given_request.keys()):
+        if {'timeout', 'topic'} == set(given_request.keys()):
             topic = given_request.pop('topic')
-            proc1 = subprocess.Popen(f"python3 /app/news_streamer.py '{topic}' {given_request['timeout']}", shell = True)
+            proc1 = subprocess.Popen(f"python3 /app/news_streamer.py '{topic}' {given_request['timeout']}", shell=True)
             url = SPARK_SERVER + "add_news"
             r = requests.post(url, json=given_request)
-            return {'status':201, 'result':r.json()}
+            return {'status': 201, 'result': r.json()}
         else:
-            return {'status':501, 'result':'all required keys are not given'}
+            return {'status': 501, 'result': 'all required keys are not given'}
     elif request.method == "TRACE":
         return given_request
 
 
-@app.route("/train",methods=["POST","TRACE"])
+@app.route("/train", methods=["POST", "TRACE"])
 def train():
     given_request = request.get_json()
     if request.method == "POST":
         url = SPARK_SERVER + "train"
         r = requests.post(url)
-        return {'status':200, 'result':r.json()}
+        return {'status': 200, 'result': r.json()}
     elif request.method == "TRACE":
         return given_request
-
