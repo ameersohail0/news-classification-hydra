@@ -259,10 +259,9 @@
             }));
             xhr.onreadystatechange = function() {
                 if (xhr.readyState == XMLHttpRequest.DONE) {
-                    alert("Model Training Succesful!")
-                    var result = xhr.responseText.JSON()['result'];
-                    var acc = result['accuracy'];
-                    var message = result['message'];   
+                    var result = JSON.parse(JSON.stringify(JSON.parse(xhr.responseText).result));
+                    var acc = result.accuracy;
+                    var message = result.message;   
                     var msg = message + " with accuracy: " + Math.round((acc + Number.EPSILON) * 100) / 100 + "%";
                     alert(msg);
                 }
