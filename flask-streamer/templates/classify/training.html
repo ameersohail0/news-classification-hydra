@@ -260,8 +260,8 @@
             xhr.onreadystatechange = function() {
                 if (xhr.readyState == XMLHttpRequest.DONE) {
                     var result = JSON.parse(JSON.stringify(JSON.parse(xhr.responseText).result));
-                    var acc = result['accuracy'];
-                    var message = result['message'];   
+                    var acc = result.accuracy;
+                    var message = result.message;   
                     var msg = message + " with accuracy: " + Math.round((acc + Number.EPSILON) * 100) / 100 + "%";
                     alert(msg);
                 }
