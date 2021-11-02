@@ -125,7 +125,7 @@ def train_model():
         print("done: model training")
         # Saving the model
         pickle.dump(clf, open('models/news_classifier.pkl', 'wb'))
-        pickle.dump(count_vect, open('models/count_vector.pkl', 'wb'))
+        pickle.dump(count_vect.vocabulary_, open('models/count_vector.pkl', 'wb'))
         pickle.dump(tfidf_transformer, open('models/tfidf.pkl', 'wb'))
         print("done: pickle save")
 
