@@ -21,6 +21,8 @@
     <link href="{{ url_for('static', filename='classify/css/sb-admin-2.min.css') }}" rel="stylesheet">
     <link href="{{ url_for('static', filename='classify/css/progress-circle.css') }}" rel="stylesheet">
     <link href="{{ url_for('static', filename='classify/css/styles.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='classify/css/popup.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='classify/css/beat.css') }}" rel="stylesheet">
 
 </head>
 
@@ -166,7 +168,7 @@
                                                     <option value="gaming">Gaming</option>
                                                 </select>
 												<label for="time">Time (in sec):</label>
-                                                <input type="number" id="time" name="time" min="30" max="500" value="30" required>
+                                                <input type="number" id="time" name="time" min="30" max="500" value="30" required/>
 												<div class="input-group-append">
 													<button id="add_news_train" class="btn btn-primary" type="button">Add News & Train</button>
 												</div>
@@ -206,6 +208,58 @@
 
             </div>
             <!-- End of Main Content -->
+
+            <!-- Popup Content -->
+            <!-- News loading popup Content-->
+			<div class="modal_box" id="modal_news_load">
+				<div id="box_news_load" class="popup_box">
+					<div class="row" style="width: 100%; align-content: center">
+						<div id="news_loading" style="margin-left: 9px;">
+                            <div class="la-ball-grid-beat la-0-5x" style="color: #e794ae;">
+                                <div></div>
+                                <div></div>
+                                <div></div>
+                                <div></div>
+                                <div></div>
+                                <div></div>
+                                <div></div>
+                                <div></div>
+                                <div></div>
+                            </div>
+                        </div>
+                        <h5 id="news_msg" style="margin-left: 9px;font-size: 26px;margin-top: 14px;">Adding news to the database!</h5>
+					</div>
+				</div>
+			</div>
+			<!-- End of News loading popup Content-->
+            
+            <!-- ML loading popup Content-->
+			<div class="modal_box" id="modal_ml_load">
+				<div id="box_ml_load" class="popup_box">
+					<div class="row" style="width: 100%; align-content: center">
+						<img src="{{ url_for('static', filename='classify/img/ml_loading.gif') }}" style="height: 72px; margin-left: 9px;"/>
+                        <h5 id="ml_msg" style="margin-left: 9px;font-size: 26px;margin-top: 26px;">Model Training in progress!</h5>
+					</div>
+				</div>
+			</div>
+			<!-- End of ML loading popup Content-->
+
+            <!-- ML Response popup Content-->
+			<div class="modal_box" id="modal_ml">
+				<div id="box_ml" class="popup_box">
+					<div class="row" style="width: 100%; align-content: center">
+						<img src="{{ url_for('static', filename='classify/img/tick1.png') }}" style="width: 72px; height: 72px; margin-left: 18px"/>
+                        <div id="ml_resp">
+                            <h5 id="ml_resp_msg" style="color: black; margin-left: 36px;">Test</h5>
+                            <h5 id="ml_resp_acc" style="color: black; margin-left: 27px;">Test</h5>
+                        </div>
+					</div>
+                    <a class="okay" onclick="pop_ml()"><button class="okay_btn">Ok</button></a>
+				</div>
+			</div>
+            <!-- End of ML Response popup Content-->
+			<!-- End of Popup Content -->
+
             <!-- Footer -->
             <footer class="sticky-footer bg-white">
                 <div class="container my-auto">
@@ -244,31 +298,120 @@
     <script src="{{ url_for('static', filename='classify/js/demo/chart-area-demo.js') }}"></script>
     <script src="{{ url_for('static', filename='classify/js/demo/chart-pie-demo.js') }}"></script>
 
-    <script>        
+    <script>
+        var modal_ml_load = null;
+        var modal_news_load = null;
+        var modal_ml = null;
+
+        function pop_news_load() {
+            if(modal_news_load === null) {
+                document.getElementById("modal_news_load").style.display = "block";
+                document.getElementById("box_news_load").style.display = "block";
+                modal_news_load = true;
+            }
+            else {
+                document.getElementById("modal_news_load").style.display = "none";
+                document.getElementById("box_news_load").style.display = "none";
+                modal_news_load = null;
+            }
+        } 
+
+        function pop_ml_load() {
+            if(modal_ml_load === null) {
+                document.getElementById("modal_ml_load").style.display = "block";
+                document.getElementById("box_ml_load").style.display = "block";
+                modal_ml_load = true;
+            }
+            else {
+                document.getElementById("modal_ml_load").style.display = "none";
+                document.getElementById("box_ml_load").style.display = "none";
+                modal_ml_load = null;
+            }
+        } 
+
+        function pop_ml() {
+            if(modal_ml === null) {
+                document.getElementById("modal_ml").style.display = "block";
+                document.getElementById("box_ml").style.display = "block";
+                modal_ml = true;
+            }
+            else {
+                document.getElementById("modal_ml").style.display = "none";
+                document.getElementById("box_ml").style.display = "none";
+                modal_ml = null;
+            }
+        }
+
+        
         document.getElementById("add_news_train").addEventListener("click", function() {
-            alert("Model training has started please wait.");
-            var xhr = new XMLHttpRequest();
-            var time = document.getElementById("time").value;
-            var topicList = document.getElementById("topic");
-            var text = topicList.options[topicList.selectedIndex].value;
-            xhr.open("POST", "http://localhost:5000/add_news", true);
-            xhr.setRequestHeader('Content-Type', 'application/json');
-            xhr.send(JSON.stringify({
-                topic: text,
-                timeout: time
-            }));
-            xhr.onreadystatechange = function() {
-                if (xhr.readyState == XMLHttpRequest.DONE) {
-                    var result = JSON.parse(JSON.stringify(JSON.parse(xhr.responseText).result));
-                    var acc = result.accuracy;
-                    var message = result.message;   
-                    var msg = message + " with accuracy: " + Math.round((acc + Number.EPSILON) * 100) / 100 + "%";
-                    alert(msg);
+            function addnews_req() {
+                console.log("started add news");
+                var xhr = new XMLHttpRequest();
+                var time = document.getElementById("time").value;
+                var topicList = document.getElementById("topic");
+                var text = topicList.options[topicList.selectedIndex].value;
+                pop_news_load();
+                xhr.open("POST", 'http://localhost:5000/add_news', true);
+                xhr.setRequestHeader('Content-Type', 'application/json');
+                xhr.send(JSON.stringify({
+                    topic: text,
+                    timeout: time
+                }));
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState == XMLHttpRequest.DONE) {
+                        pop_news_load();
+                        pop_ml_load();
+                        console.log("starting ml train");
+                        mltrain_req();
+                    }
                 }
             }
+
+            
+            function mltrain_req() {
+                console.log("started ml train");
+                var xhr = new XMLHttpRequest();
+                xhr.open("POST", 'http://localhost:5000/train', true);
+                xhr.send(null);
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState == XMLHttpRequest.DONE) {
+                        pop_ml_load();
+                        var result = JSON.parse(JSON.stringify(JSON.parse(xhr.responseText).result));
+                        var acc = result.accuracy;
+                        var message = result.message;
+                        pop_ml();
+                        var x;
+                        x = setInterval(function() {
+                            const resp_msg = document.querySelector('ml_resp_msg');
+                            if(resp_msg !== null) {
+                                clearInterval(x);
+                                resp_msg.innerHTML = message;
+                            }
+                        }, 500);
+                        var y;
+                        y = setInterval(function() {
+                            const resp_acc = document.querySelector('ml_resp_acc');
+                            if(resp_acc !== null) {
+                                clearInterval(y);
+                                resp_acc.innerHTML = acc;
+                            }
+                        }, 500);
+                        // document.getElementById("box_ml").onload = function(){
+                        //     document.querySelector("#ml_resp_msg").innerHTML = msg;
+                        //     document.querySelector("#ml_resp_acc").innerHTML = "Accuracy: " + acc;
+                        // }
+                    }
+                }
+            }
+            
+            console.log("starting add news");
+            addnews_req();
         });
-    </script>
-	
+        window.callback = function(doc) {
+            doc.getElementById('ml_resp_msg').innerHTML = "Hello there";
+            doc.getElementById('ml_resp_acc').innerHTML = "Hello world";
+        }
+    </script>	
 </body>
 
 </html>
