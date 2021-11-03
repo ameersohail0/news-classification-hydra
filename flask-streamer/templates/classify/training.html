@@ -380,26 +380,12 @@
                         var acc = result.accuracy;
                         var message = result.message;
                         pop_ml();
-                        var x;
-                        x = setInterval(function() {
-                            const resp_msg = document.querySelector('ml_resp_msg');
-                            if(resp_msg !== null) {
-                                clearInterval(x);
-                                resp_msg.innerHTML = message;
-                            }
-                        }, 500);
-                        var y;
-                        y = setInterval(function() {
-                            const resp_acc = document.querySelector('ml_resp_acc');
-                            if(resp_acc !== null) {
-                                clearInterval(y);
-                                resp_acc.innerHTML = acc;
-                            }
-                        }, 500);
-                        // document.getElementById("box_ml").onload = function(){
-                        //     document.querySelector("#ml_resp_msg").innerHTML = msg;
-                        //     document.querySelector("#ml_resp_acc").innerHTML = "Accuracy: " + acc;
-                        // }
+                        waitForElement("ml_resp_msg", function() {
+                            document.getElementById("ml_resp_msg").innerHTML = message;
+                        });
+                        waitForElement("ml_resp_acc", function() {
+                            document.getElementById("ml_resp_acc").innerHTML = "Accuracy" + (Math.round(acc + "e+2") + "e-2") + "%";
+                        });
                     }
                 }
             }
@@ -407,9 +393,15 @@
             console.log("starting add news");
             addnews_req();
         });
-        window.callback = function(doc) {
-            doc.getElementById('ml_resp_msg').innerHTML = "Hello there";
-            doc.getElementById('ml_resp_acc').innerHTML = "Hello world";
+        function waitForElement(elementId, callBack){
+            window.setTimeout(function(){
+                var element = document.getElementById(elementId);
+                if(element){
+                callBack(elementId, element);
+                }else{
+                waitForElement(elementId, callBack);
+                }
+            },500);
         }
     </script>	
 </body>
