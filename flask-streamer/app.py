@@ -27,11 +27,14 @@ category_list = ['POLITICS', "WELLNESS", 'ENTERTAINMENT',
                  "WORLD", "NEWS"]
 
 
+
+# Main Homepage route 
 @app.route("/", methods=["GET", "POST"])
 def home():
     return render_template("index.html")
 
 
+# Healthcheck route to ensure that the API is up and running
 @app.route("/ping", methods=["GET", "TRACE"])
 def ping():
     if request.method == "GET":
@@ -42,6 +45,7 @@ def ping():
         return "ping trace method"
 
 
+# Route to do the classification using the ML model defined.
 @app.route("/classify_news", methods=["GET", "POST", "TRACE"])
 def classify_news():
     global data, final_data
@@ -70,6 +74,7 @@ def classify_news():
     return render_template("classify/index.html", data=final_data)
 
 
+# Route to add news to the database
 @app.route("/add_news", methods=["GET", "POST", "TRACE"])
 @cross_origin()
 def add_news():
@@ -89,7 +94,7 @@ def add_news():
         return given_request
     
 
-
+# Route to further train the model based on the new data
 @app.route("/train", methods=["POST", "TRACE"])
 @cross_origin()
 def train():

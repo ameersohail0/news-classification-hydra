@@ -31,6 +31,7 @@ headers = {
 
 
 def news_streamer(topic, timeout):
+    """This function streams the data to the specific topics."""
     now = time()
     page_no = 1
     while time() - now < 2 * timeout:
@@ -41,8 +42,7 @@ def news_streamer(topic, timeout):
                 try:
                     if article['topic'] == "sport":
                         article['topic'] = "sports"
-                    message = article["topic"].upper()+"//"+article["summary"]
-                    print(f">>> {message.split('//')}")                                                                                           
+                    message = article["topic"].upper()+"//"+article["summary"]                                                                                           
                     p.send(TOPIC, bytes(message, encoding="utf8"))
                 except:
                     print("message can't be sent")                                                                      

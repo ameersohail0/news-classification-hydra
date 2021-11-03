@@ -25,11 +25,8 @@ class QueryOut(BaseModel):
     probabilities: List[float] = []
     o_data: List[str] = []
 
-# class TrainIn(BaseModel):
-#     summary: str
-#     topic: str
 
-
+# class which is expected in the payload
 class DataIn(BaseModel):
     timeout: int
 
@@ -54,9 +51,9 @@ def classify_news(query_url: QueryIn):
 
 
 @app.post("/add_news", status_code=200)
-# Route to further train the model based on user input in form of feedback loop
+# Route to add news to the database
 # Payload: FeedbackIn containing the parameters and correct news topic
-# Response: Dict with detail confirming success (200)
+# Response: Dict
 def add_news(data: DataIn):
     transformer(data)
     # response = requests.post("/reload_model")
@@ -64,9 +61,9 @@ def add_news(data: DataIn):
 
 
 @app.post("/train", status_code=200)
-# Route to further train the model based on user input in form of feedback loop
+# Route to further train the model based on the new data
 # Payload: FeedbackIn containing the parameters and correct news topic
-# Response: Dict with detail confirming success (200)
+# Response: Dict with detail confirming success and the accuracy of the model
 def train():
     resp = train_model()
     return resp

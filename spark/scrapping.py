@@ -12,6 +12,7 @@ nltk.download('punkt')
 
 
 def web_scrapping(url):
+    """This function extracts the data from the URL provided and returns the extracted data."""
     r = requests.get(str(url))
     soup = BeautifulSoup(r.text, "html.parser")
 
@@ -74,6 +75,7 @@ def web_scrapping(url):
 
 
 def process_text(text):
+    """This function cleans the data and pre-process it before training."""
     pattern = r'[0-9]'
     pattern2 = r'([\.0-9]+)$'
     text = str(text)

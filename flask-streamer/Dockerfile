@@ -77,7 +77,3 @@ RUN chmod u+x /app/start_flask.sh
 RUN dos2unix /app/start_flask.sh
 
 CMD  export LC_ALL=C.UTF-8 && export LANG=C.UTF-8 && /app/start_flask.sh
-
-# CMD [ "python3", "-m" , "flask", "run", "--host=0.0.0.0"]
-
-# CMD /app/kafka_create.sh && /app/news_stream.sh

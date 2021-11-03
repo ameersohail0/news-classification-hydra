@@ -37,25 +37,11 @@ RUN pip3 install requests==2.21.0
 
 RUN pip3 install sklearn
 
-# Installing XGBoost
-# RUN apt install cmake -y
-# RUN pip3 install --upgrade pip
-# RUN pip3 install --upgrade setuptools
-# RUN pip3 install ez_setup
-# RUN pip3 install wheel
-# RUN pip3 install sklearn
-# RUN pip3 install xgboost
 
 # Downloading Spark
 RUN wget https://archive.apache.org/dist/spark/spark-2.4.8/spark-2.4.8-bin-hadoop2.7.tgz
 RUN tar -xvf spark-2.4.8-bin-hadoop2.7.tgz
 RUN mv spark-2.4.8-bin-hadoop2.7.tgz spark
-# RUN rm spark-2.4.8-bin-hadoop2.7.tgz
-
-# RUN wget https://mirrors.estointernet.in/apache/spark/spark-3.1.2/spark-3.1.2-bin-hadoop2.7.tgz
-# RUN tar -xvf spark-3.1.2-bin-hadoop2.7.tgz
-# RUN mv spark-3.1.2-bin-hadoop2.7 spark
-# RUN rm spark-3.1.2-bin-hadoop2.7.tgz
 
 # Downloading Spark Streaming Kafka
 RUN wget https://search.maven.org/remotecontent?filepath=org/apache/spark/spark-streaming-kafka-0-8-assembly_2.11/2.4.8/spark-streaming-kafka-0-8-assembly_2.11-2.4.8.jar -O spark-streaming-kafka-0-8-assembly_2.11-2.4.8.jar
@@ -91,12 +77,8 @@ COPY data/news_new.json /app/data/news_new.json
 COPY transformer.py /app/transformer.py
 
 
-# COPY XGBoost_model.pkl /app/XGBoost_model.pkl
-
 COPY start_spark.sh /app/start_spark.sh
 RUN chmod u+x /app/start_spark.sh
 RUN dos2unix /app/start_spark.sh
 
 CMD ["/bin/bash","-c","/app/start_spark.sh"]
-
-# CMD ["/bin/bash"]

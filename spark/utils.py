@@ -58,7 +58,7 @@ def load_model():
             articles.insert_many(data)
 
 
-# function to predict the flower using the model
+# function to predict the new category using the model
 def predict(query_data):
     clf = pickle.load(open("models/news_classifier.pkl", "rb"))
     count_vect = CountVectorizer(vocabulary=pickle.load(open("models/count_vector.pkl", "rb")))
@@ -76,6 +76,7 @@ def predict(query_data):
     return predictions, probabilities
 
 
+# function to add the news to the database
 def transformer(data):
     # listen to kafka and add data to pymongo
     time_delay = list(data.dict().values())[0]
@@ -132,13 +133,11 @@ def train_model():
         model_predictions = clf.predict(X_test)
         acc = accuracy_score(y_test, model_predictions) * 100
 
-        return {
-            "message": "Training Successful",
-            "accuracy": acc}
+        return {"message": "Training Successful", "accuracy": acc}
 
     return {"message": "Not enough new data to train"}
 
-
+# function to clean the data and pre-process it before training.
 def process_text(text):
     pattern = r'[0-9]'
     pattern2 = r'([\.0-9]+)$'
@@ -153,10 +152,5 @@ def process_text(text):
     stop_words = set(stopwords.words('english'))
     word_tokens = word_tokenize(text)
     filtered_sentence = [w for w in word_tokens if not w in stop_words]
-    # filtered_sentence = []
-    # for w in word_tokens:
-    #     if w not in stop_words:
-    #         filtered_sentence.append(w)
-
     text = " ".join(filtered_sentence)
     return text
