@@ -96,18 +96,18 @@ def train_model():
     news_data = []
     for data in articles.find({}):
         news_data.append(data)
-        if(data['category'] not in category_list):
-            category_list.append(data['category'])
 
     data = pd.DataFrame(news_data)
+    print(data.shape)
 
-    print("Loaded data for training")
+    print("done: loading data")
 
     if len(data) > 0:
         data['summary'] = data['short_description'].apply(process_text)
+        data = data.dropna()
         cat_list = [category_list.index(i) for i in data['category']]
         data['flag'] = cat_list
-        print("done: loading data")
+        print("done: pre-processing of data")
         count_vect = CountVectorizer()
         X_train_counts = count_vect.fit_transform(data.summary)
 
